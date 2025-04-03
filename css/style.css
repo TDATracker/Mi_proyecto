@@ -85,6 +85,9 @@
     background-color: #212529;
     border-color: #212529;
 }
+.custom-btn {
+    padding: 15px 40px !important; /* Ajusta los valores según necesites */
+}
 
 .btn-primary:focus,
 .btn-primary:active {
@@ -185,6 +188,10 @@
         /* Espaciado adicional entre secciones */
     }
 
+}
+/* Boton enviar mensaje */
+.btn-contacto {
+    padding: 12px 30px !important; /* Ajusta estos valores según el tamaño que desees */
 }
 
 /* boton para llevar al inicio */

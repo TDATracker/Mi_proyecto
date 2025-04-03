@@ -1,8 +1,8 @@
 <h4 class="text-center mb-4"><i class="fas fa-user-plus me-2"></i>Registro Usuario</h4>
 <form id="form-usuario">
     <!-- Fila para Nombre y Apellido -->
-    <div class="row">
-        <div class="col-md-6 mb-3">
+    <div class="row g-3">
+        <div class="col-md-6">
             <label for="nombre" class="form-label">Nombre</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -10,7 +10,7 @@
             </div>
             <p id="nombre-error" class="text-danger small mt-1 mb-0"></p>
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6">
             <label for="apellido" class="form-label">Apellido</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
@@ -20,9 +20,9 @@
         </div>
     </div>
 
-    <!-- Email y Contraseña en la misma fila -->
-    <div class="row">
-        <div class="col-md-6 mb-3">
+    <!-- Email -->
+    <div class="row g-3">
+        <div class="col-12">
             <label for="email" class="form-label">Correo Electrónico</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
@@ -30,7 +30,11 @@
             </div>
             <p id="email-error" class="text-danger small mt-1 mb-0"></p>
         </div>
-        <div class="col-md-6 mb-3">
+    </div>
+
+    <!-- Confirmar contraseña -->
+    <div class="row g-3">
+        <div class="col-md-6">
             <label for="password" class="form-label">Contraseña</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
@@ -38,11 +42,19 @@
             </div>
             <p id="password-error" class="text-danger small mt-1 mb-0"></p>
         </div>
+        <div class="col-md-6">
+            <label for="password-confirmar" class="form-label">Confirmar contraseña</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control" id="password-confirmar" placeholder="Mínimo 6 caracteres" required>
+            </div>
+            <p id="password-error-confirmar" class="text-danger small mt-1 mb-0"></p>
+        </div>
     </div>
 
     <!-- Fila para Género y Teléfono -->
-    <div class="row">
-        <div class="col-md-6 mb-3">
+    <div class="row g-3">
+        <div class="col-md-6">
             <label for="genero" class="form-label">Género</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
@@ -55,11 +67,11 @@
             </div>
             <p id="genero-error" class="text-danger small mt-1 mb-0"></p>
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6">
             <label for="telefono" class="form-label">Teléfono</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                <input type="tel" class="form-control" id="telefono" placeholder="9 dígitos">
+                <input type="tel" class="form-control" id="telefono" placeholder="9 dígitos" required>
             </div>
             <p id="telefono-error" class="text-danger small mt-1 mb-0"></p>
         </div>

@@ -21,17 +21,39 @@
     </div>
 
     <!-- Email -->
-    <div class="mt-3">
-        <label for="email2" class="form-label">Correo Electrónico</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-            <input type="email" class="form-control" id="email2" placeholder="ejemplo@dominio.com" required>
+    <div class="row g-3">
+        <div class="col-12">
+            <label for="email" class="form-label">Correo Electrónico</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" class="form-control" id="email" placeholder="ejemplo@dominio.com" required>
+            </div>
+            <p id="email-error" class="text-danger small mt-1 mb-0"></p>
         </div>
-        <p id="email2-error" class="text-danger small mt-1 mb-0"></p>
+    </div>
+
+    <!-- Confirmar contraseña -->
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="password" class="form-label">Contraseña</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control" id="password" placeholder="Mínimo 6 caracteres" required>
+            </div>
+            <p id="password-error" class="text-danger small mt-1 mb-0"></p>
+        </div>
+        <div class="col-md-6">
+            <label for="password-confirmar" class="form-label">Confirmar contraseña</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control" id="password-confirmar" placeholder="Mínimo 6 caracteres" required>
+            </div>
+            <p id="password-error-confirmar" class="text-danger small mt-1 mb-0"></p>
+        </div>
     </div>
 
     <!-- Fila para Género y Teléfono -->
-    <div class="row g-3 mt-2">
+    <div class="row g-3">
         <div class="col-md-6">
             <label for="genero2" class="form-label">Género</label>
             <div class="input-group">

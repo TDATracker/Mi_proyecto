@@ -14,12 +14,12 @@ document.addEventListener("DOMContentLoaded", function () {
             const selectedForm = this.getAttribute("data-form");
             
             // Cargar el formulario correspondiente usando fetch
-            loadForm(selectedForm);
+            cargarFormulario(selectedForm);
         });
     });
 
     // Función para cargar formularios externos
-    function loadForm(formType) {
+    function cargarFormulario(formType) {
         let formFile = "";
         
         switch(formType) {
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(html => {
                 formContainer.innerHTML = html;
                 // Configurar validaciones después de cargar el formulario
-                setupFormValidation(formType);
+                ValidacionFormulario(formType);
             })
             .catch(error => {
                 console.error("Error al cargar el formulario:", error);
@@ -48,236 +48,346 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Función para configurar validaciones según el formulario
-    function setupFormValidation(formType) {
+    function ValidacionFormulario(formType) {
         switch(formType) {
             case "form1":
-                setupForm1Validation();
+                validacionFormulario1();
                 break;
             case "form2":
-                setupForm2Validation();
+                validacionFormulario2();
                 break;
             case "form3":
-                setupForm3Validation();
+                validacionFormulario3();
                 break;
         }
     }
 
-    // Resto de las funciones de validación (setupForm1Validation, setupForm2Validation, setupForm3Validation)
-    // ... (mantener exactamente las mismas funciones que ya tienes en tu archivo original)
-    // [Aquí irían todas las funciones de validación que ya tenías, sin cambios]
-
     // Función para validar Formulario 1 (Registro Completo)
-    function setupForm1Validation() {
+    function validacionFormulario1() {
         const form = document.getElementById("form-usuario");
         const nombre = document.getElementById("nombre");
         const apellido = document.getElementById("apellido");
         const email = document.getElementById("email");
-        const genero = document.getElementById("genero");
-        const telefono = document.getElementById("telefono");
-
+        const password = document.getElementById("password");
+        const passwordConfirm = document.getElementById("password-confirmar");
+    
         form.addEventListener("submit", function(event) {
-            event.preventDefault();
-            let isValid = true;
-
+            event.preventDefault(); // Evita el envío del formulario por defecto
+            let esValido = true;
+    
             // Validar nombre
-            const nombreValue = nombre.value.trim();
-            if (nombreValue === "") {
-                document.getElementById("nombre-error").textContent = "El nombre es obligatorio";
-                nombre.classList.add("is-invalid");
-                isValid = false;
-            } else if (nombreValue.length < 3) {
+            if (nombre.value.trim() === "" || nombre.value.trim().length < 3) {
                 document.getElementById("nombre-error").textContent = "El nombre debe tener al menos 3 caracteres";
                 nombre.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
-                nombre.classList.remove("is-invalid");
                 document.getElementById("nombre-error").textContent = "";
+                nombre.classList.remove("is-invalid");
             }
-
+    
             // Validar apellido
-            const apellidoValue = apellido.value.trim();
-            if (apellidoValue === "") {
-                document.getElementById("apellido-error").textContent = "El apellido es obligatorio";
-                apellido.classList.add("is-invalid");
-                isValid = false;
-            } else if (apellidoValue.length < 3) {
+            if (apellido.value.trim() === "" || apellido.value.trim().length < 3) {
                 document.getElementById("apellido-error").textContent = "El apellido debe tener al menos 3 caracteres";
                 apellido.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
-                apellido.classList.remove("is-invalid");
                 document.getElementById("apellido-error").textContent = "";
+                apellido.classList.remove("is-invalid");
             }
-
+    
             // Validar email
-            const emailValue = email.value.trim();
-            if (emailValue === "") {
-                document.getElementById("email-error").textContent = "El correo electrónico es obligatorio";
-                email.classList.add("is-invalid");
-                isValid = false;
-            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email.value.trim())) {
                 document.getElementById("email-error").textContent = "Ingrese un correo válido";
                 email.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
-                email.classList.remove("is-invalid");
                 document.getElementById("email-error").textContent = "";
+                email.classList.remove("is-invalid");
             }
-
+    
             // Validar contraseña
             const passwordValue = password.value.trim();
             if (passwordValue === "") {
                 document.getElementById("password-error").textContent = "La contraseña es obligatoria";
                 password.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else if (passwordValue.length < 6) {
                 document.getElementById("password-error").textContent = "Mínimo 6 caracteres";
                 password.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else if (!/[A-Z]/.test(passwordValue)) {
                 document.getElementById("password-error").textContent = "Debe contener al menos una mayúscula";
                 password.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else if (!/[a-z]/.test(passwordValue)) {
                 document.getElementById("password-error").textContent = "Debe contener al menos una minúscula";
                 password.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(passwordValue)) {
-                document.getElementById("password-error").textContent = "Debe contener al menos un carácter especial";
+                document.getElementById("password-error").textContent = "Falta caracter especial:(!@#$%^&*)";
                 password.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
                 password.classList.remove("is-invalid");
                 document.getElementById("password-error").textContent = "";
             }
-
-            if (isValid) {
-                alert("Formulario de registro completado con éxito!");
-                form.submit(); // Descomentar para enviar realmente
+    
+            // Validar confirmación de contraseña
+            if (passwordValue !== passwordConfirm.value.trim()) {
+                document.getElementById("password-error-confirmar").textContent = "Las contraseñas no coinciden";
+                passwordConfirm.classList.add("is-invalid");
+                esValido = false;
+            } else {
+                document.getElementById("password-error-confirmar").textContent = "";
+                passwordConfirm.classList.remove("is-invalid");
             }
+    
+            // Si hay algún error, detener el envío del formulario
+            if (!esValido) {
+                return;
+            }
+    
+            // Si todo está correcto, enviar el formulario
+            const formData = {
+                nombre: nombre.value.trim(),
+                apellido: apellido.value.trim(),
+                email: email.value.trim(),
+                password: password.value.trim(),
+                passwordConfirm: passwordConfirm.value.trim()
+            };
+
+            // Enviar los datos al servidor usando fetch
+            fetch('ruta_del_servidor/guardarFormulario', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // Usamos JSON
+                },
+                body: JSON.stringify(formData) // Convertir el objeto en una cadena JSON
+            })
+            .then(response => response.json()) // Procesamos la respuesta del servidor
+            .then(data => {
+                if (data.success) {
+                    alert("Formulario enviado con éxito");
+                    form.reset(); // Limpiar el formulario
+                } else {
+                    alert("Hubo un error al enviar el formulario");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Error al enviar el formulario. Por favor, intente nuevamente.");
+            });
         });
     }
+    
 
-    // Función para validar Formulario 2 (Registro Básico)
-    function setupForm2Validation() {
+    // Función para validar Formulario 2
+    function validacionFormulario2() {
         const form = document.getElementById("form-basico");
         const nombre = document.getElementById("nombre2");
         const apellido = document.getElementById("apellido2");
-        const email = document.getElementById("email2");
+        const email = document.getElementById("email");
         const genero = document.getElementById("genero2");
         const telefono = document.getElementById("telefono2");
-
+        const password = document.getElementById("password");
+        const passwordConfirm = document.getElementById("password-confirmar");
+    
         form.addEventListener("submit", function(event) {
-            event.preventDefault();
-            let isValid = true;
-
+            event.preventDefault(); // Evita el envío del formulario por defecto
+            let esValido = true;
+    
             // Validar nombre
             const nombreValue = nombre.value.trim();
             if (nombreValue === "") {
-                document.getElementById("nombre-error").textContent = "El nombre es obligatorio";
+                document.getElementById("nombre2-error").textContent = "El nombre es obligatorio";
                 nombre.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else if (nombreValue.length < 3) {
-                document.getElementById("nombre-error").textContent = "El nombre debe tener al menos 3 caracteres";
+                document.getElementById("nombre2-error").textContent = "El nombre debe tener al menos 3 caracteres";
                 nombre.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
                 nombre.classList.remove("is-invalid");
-                document.getElementById("nombre-error").textContent = "";
+                document.getElementById("nombre2-error").textContent = "";
             }
-
+    
             // Validar apellido
             const apellidoValue = apellido.value.trim();
             if (apellidoValue === "") {
-                document.getElementById("apellido-error").textContent = "El apellido es obligatorio";
+                document.getElementById("apellido2-error").textContent = "El apellido es obligatorio";
                 apellido.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else if (apellidoValue.length < 3) {
-                document.getElementById("apellido-error").textContent = "El apellido debe tener al menos 3 caracteres";
+                document.getElementById("apellido2-error").textContent = "El apellido debe tener al menos 3 caracteres";
                 apellido.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
                 apellido.classList.remove("is-invalid");
-                document.getElementById("apellido-error").textContent = "";
+                document.getElementById("apellido2-error").textContent = "";
             }
-
+    
             // Validar email
             const emailValue = email.value.trim();
             if (emailValue === "") {
-                document.getElementById("email2-error").textContent = "El correo electrónico es obligatorio";
+                document.getElementById("email-error").textContent = "El correo electrónico es obligatorio";
                 email.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-                document.getElementById("email2-error").textContent = "Ingrese un correo válido";
+                document.getElementById("email-error").textContent = "Ingrese un correo válido";
                 email.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
                 email.classList.remove("is-invalid");
-                document.getElementById("email2-error").textContent = "";
+                document.getElementById("email-error").textContent = "";
             }
-
+    
             // Validar género
             const generoValue = genero.value;
             if (generoValue === "") {
                 document.getElementById("genero2-error").textContent = "Seleccione un género";
                 genero.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
                 genero.classList.remove("is-invalid");
                 document.getElementById("genero2-error").textContent = "";
             }
-
-            if (isValid) {
-                alert("Registro básico completado con éxito!");
-                form.submit(); // Descomentar para enviar realmente
+    
+            // Validar teléfono (si es necesario)
+            const telefonoValue = telefono.value.trim();
+            if (telefonoValue !== "" && !/^\d{9}$/.test(telefonoValue)) {
+                document.getElementById("telefono2-error").textContent = "El teléfono debe tener 9 dígitos";
+                telefono.classList.add("is-invalid");
+                esValido = false;
+            } else {
+                telefono.classList.remove("is-invalid");
+                document.getElementById("telefono2-error").textContent = "";
+            }
+    
+            // Validar contraseña
+            const passwordValue = password.value.trim();
+            if (passwordValue === "") {
+                document.getElementById("password-error").textContent = "La contraseña es obligatoria";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else if (passwordValue.length < 6) {
+                document.getElementById("password-error").textContent = "Mínimo 6 caracteres";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else if (!/[A-Z]/.test(passwordValue)) {
+                document.getElementById("password-error").textContent = "Debe contener al menos una mayúscula";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else if (!/[a-z]/.test(passwordValue)) {
+                document.getElementById("password-error").textContent = "Debe contener al menos una minúscula";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(passwordValue)) {
+                document.getElementById("password-error").textContent = "Falta caracter especial: (!@#$%^&*)";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else {
+                password.classList.remove("is-invalid");
+                document.getElementById("password-error").textContent = "";
+            }
+    
+            // Validar confirmación de contraseña
+            if (passwordValue !== passwordConfirm.value.trim()) {
+                document.getElementById("password-error-confirmar").textContent = "Las contraseñas no coinciden";
+                passwordConfirm.classList.add("is-invalid");
+                esValido = false;
+            } else {
+                document.getElementById("password-error-confirmar").textContent = "";
+                passwordConfirm.classList.remove("is-invalid");
+            }
+    
+            // Si hay algún error, detener el envío del formulario
+            if (!esValido) {
+                return;
+            } else {
+                const formData = {
+                    nombre: nombre.value.trim(),
+                    apellido: apellido.value.trim(),
+                    email: email.value.trim(),
+                    password: password.value.trim(),
+                    passwordConfirm: passwordConfirm.value.trim()
+                };
+    
+                // Enviar los datos al servidor usando fetch
+                fetch('ruta_del_servidor/guardarFormulario', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' // Usamos JSON
+                    },
+                    body: JSON.stringify(formData) // Convertir el objeto en una cadena JSON
+                })
+                .then(response => response.json()) // Procesamos la respuesta del servidor
+                .then(data => {
+                    if (data.success) {
+                        alert("Formulario enviado con éxito");
+                        form.reset(); // Limpiar el formulario
+                    } else {
+                        alert("Hubo un error al enviar el formulario");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Error al enviar el formulario. Por favor, intente nuevamente.");
+                });
             }
         });
-    }
+    }    
 
     // Función para validar Formulario 3 (Contacto)
-    function setupForm3Validation() {
+    function validacionFormulario3() {
         const form = document.getElementById("form-contacto");
         const nombre = document.getElementById("nombre3");
         const direccion = document.getElementById("direccion");
         const email = document.getElementById("email3");
         const telefono = document.getElementById("telefono3");
-
+        const password = document.getElementById("password");
+        const passwordConfirm = document.getElementById("password-confirmar");
+    
         form.addEventListener("submit", function(event) {
-            event.preventDefault();
-            let isValid = true;
-
+            event.preventDefault(); // Evita el envío del formulario por defecto
+            let esValido = true;
+    
             // Validar nombre
             const nombreValue = nombre.value.trim();
             if (nombreValue === "") {
-                document.getElementById("nombre3-error").textContent = "El nombre es obligatorio";
+                document.getElementById("nombre3-error").textContent = "El nombre completo es obligatorio";
                 nombre.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
+            } else if (nombreValue.length < 3) {
+                document.getElementById("nombre3-error").textContent = "El nombre debe tener al menos 3 caracteres";
+                nombre.classList.add("is-invalid");
+                esValido = false;
             } else {
                 nombre.classList.remove("is-invalid");
                 document.getElementById("nombre3-error").textContent = "";
             }
-
+    
             // Validar dirección
             const direccionValue = direccion.value.trim();
             if (direccionValue === "") {
                 document.getElementById("direccion-error").textContent = "La dirección es obligatoria";
                 direccion.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
                 direccion.classList.remove("is-invalid");
                 document.getElementById("direccion-error").textContent = "";
             }
-
+    
             // Validar email
             const emailValue = email.value.trim();
             if (emailValue === "") {
                 document.getElementById("email3-error").textContent = "El correo electrónico es obligatorio";
                 email.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
                 document.getElementById("email3-error").textContent = "Ingrese un correo válido";
                 email.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
                 email.classList.remove("is-invalid");
                 document.getElementById("email3-error").textContent = "";
@@ -285,22 +395,85 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Validar teléfono
             const telefonoValue = telefono.value.trim();
-            if (telefonoValue === "") {
-                document.getElementById("telefono3-error").textContent = "El teléfono es obligatorio";
+            if (telefonoValue !== "" && !/^\d{9}$/.test(telefonoValue)) {
+                document.getElementById("telefono3-error").textContent = "El teléfono debe tener 9 dígitos";
                 telefono.classList.add("is-invalid");
-                isValid = false;
-            } else if (!/^\d{10}$/.test(telefonoValue)) {
-                document.getElementById("telefono3-error").textContent = "Debe contener exactamente 10 dígitos";
-                telefono.classList.add("is-invalid");
-                isValid = false;
+                esValido = false;
             } else {
                 telefono.classList.remove("is-invalid");
                 document.getElementById("telefono3-error").textContent = "";
             }
 
-            if (isValid) {
-                alert("Formulario de contacto enviado con éxito!");
-                form.submit(); // Descomentar para enviar realmente
+            // Validar contraseña
+            const passwordValue = password.value.trim();
+            if (passwordValue === "") {
+                document.getElementById("password-error").textContent = "La contraseña es obligatoria";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else if (passwordValue.length < 6) {
+                document.getElementById("password-error").textContent = "Mínimo 6 caracteres";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else if (!/[A-Z]/.test(passwordValue)) {
+                document.getElementById("password-error").textContent = "Debe contener al menos una mayúscula";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else if (!/[a-z]/.test(passwordValue)) {
+                document.getElementById("password-error").textContent = "Debe contener al menos una minúscula";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(passwordValue)) {
+                document.getElementById("password-error").textContent = "Falta caracter especial: (!@#$%^&*)";
+                password.classList.add("is-invalid");
+                esValido = false;
+            } else {
+                password.classList.remove("is-invalid");
+                document.getElementById("password-error").textContent = "";
+            }
+
+            // Validar confirmación de contraseña
+            if (passwordValue !== passwordConfirm.value.trim()) {
+                document.getElementById("password-error-confirmar").textContent = "Las contraseñas no coinciden";
+                passwordConfirm.classList.add("is-invalid");
+                esValido = false;
+            } else {
+                document.getElementById("password-error-confirmar").textContent = "";
+                passwordConfirm.classList.remove("is-invalid");
+            }
+
+            // Si hay algún error, detener el envío del formulario
+            if (!esValido) {
+                return;
+            } else {
+                const formData = {
+                    nombre: nombre.value.trim(),
+                    apellido: apellido.value.trim(),
+                    email: email.value.trim(),
+                    password: password.value.trim(),
+                    passwordConfirm: passwordConfirm.value.trim()
+                };
+    
+                // Enviar los datos al servidor usando fetch
+                fetch('ruta_del_servidor/guardarFormulario', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json' // Usamos JSON
+                    },
+                    body: JSON.stringify(formData) // Convertir el objeto en una cadena JSON
+                })
+                .then(response => response.json()) // Procesamos la respuesta del servidor
+                .then(data => {
+                    if (data.success) {
+                        alert("Formulario enviado con éxito");
+                        form.reset(); // Limpiar el formulario
+                    } else {
+                        alert("Hubo un error al enviar el formulario");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Error al enviar el formulario. Por favor, intente nuevamente.");
+                });
             }
         });
     }
