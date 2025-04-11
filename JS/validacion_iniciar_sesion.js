@@ -61,7 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append("password", password);
 
         // Enviar los datos con fetch
-        fetch("iniciar_sesion.php", {
+        console.log("Datos enviados:", formData.get("password"));
+        fetch("../inicio_sesionbackend.php", {
             method: "POST",
             body: formData,
         })
@@ -69,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             if (data.success) {
                 // Redirigir a otra página si la autenticación es exitosa
-                window.location.href = "dashboard.html";  // O cualquier página a la que quieras redirigir
+                window.location.href = "../dashboard.html";  // O cualquier página a la que quieras redirigir
             } else {
                 // Mostrar error si la autenticación falla
                 passwordError.textContent = data.message; // Mostrar el mensaje del servidor

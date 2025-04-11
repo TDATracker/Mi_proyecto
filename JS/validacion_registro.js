@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Función para validar Formulario 1 (Registro Completo)
+    // Función para validar Formulario 1 (Usuario)
     function validacionFormulario1() {
         const form = document.getElementById("form-usuario");
         const nombre = document.getElementById("nombre");
@@ -70,7 +70,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const email = document.getElementById("email");
         const password = document.getElementById("password");
         const passwordConfirm = document.getElementById("password-confirmar");
-    
+        const genero = document.getElementById("genero");
+        const telefono = document.getElementById("telefono");
         form.addEventListener("submit", function(event) {
             event.preventDefault(); // Evita el envío del formulario por defecto
             let esValido = true;
@@ -142,6 +143,28 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("password-error-confirmar").textContent = "";
                 passwordConfirm.classList.remove("is-invalid");
             }
+
+            // Validar teléfono (si es necesario)
+            const telefonoValue = telefono.value.trim();
+            if (telefonoValue !== "" && !/^\d{9}$/.test(telefonoValue)) {
+                document.getElementById("telefono-error").textContent = "El teléfono debe tener 9 dígitos";
+                telefono.classList.add("is-invalid");
+                esValido = false;
+            } else {
+                telefono.classList.remove("is-invalid");
+                document.getElementById("telefono-error").textContent = "";
+            }
+
+            // Validar género
+            const generoValue = genero.value;
+            if (generoValue === "") {
+                document.getElementById("genero-error").textContent = "Seleccione un género";
+                genero.classList.add("is-invalid");
+                esValido = false;
+            } else {
+                genero.classList.remove("is-invalid");
+                document.getElementById("genero-error").textContent = "";
+            }
     
             // Si hay algún error, detener el envío del formulario
             if (!esValido) {
@@ -154,11 +177,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 apellido: apellido.value.trim(),
                 email: email.value.trim(),
                 password: password.value.trim(),
-                passwordConfirm: passwordConfirm.value.trim()
+                passwordConfirm: passwordConfirm.value.trim(),
+                telefono: telefono.value.trim(),
+                genero: genero.value.trim()
             };
 
             // Enviar los datos al servidor usando fetch
-            fetch('ruta_del_servidor/guardarFormulario', {
+            fetch('../PHP/registroUsuario.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json' // Usamos JSON
@@ -182,12 +207,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     
 
-    // Función para validar Formulario 2
+    // Función para validar especialista
     function validacionFormulario2() {
         const form = document.getElementById("form-basico");
         const nombre = document.getElementById("nombre2");
         const apellido = document.getElementById("apellido2");
-        const email = document.getElementById("email");
+        const email = document.getElementById("email2");
         const genero = document.getElementById("genero2");
         const telefono = document.getElementById("telefono2");
         const password = document.getElementById("password");
@@ -309,12 +334,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     nombre: nombre.value.trim(),
                     apellido: apellido.value.trim(),
                     email: email.value.trim(),
+                    genero: genero.value.trim(),
                     password: password.value.trim(),
                     passwordConfirm: passwordConfirm.value.trim()
                 };
     
                 // Enviar los datos al servidor usando fetch
-                fetch('ruta_del_servidor/guardarFormulario', {
+                fetch('../PHP/registroEspecialista.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json' // Usamos JSON
@@ -338,7 +364,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }    
 
-    // Función para validar Formulario 3 (Contacto)
+    // Función para validar Centro
     function validacionFormulario3() {
         const form = document.getElementById("form-contacto");
         const nombre = document.getElementById("nombre3");
@@ -447,14 +473,15 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 const formData = {
                     nombre: nombre.value.trim(),
-                    apellido: apellido.value.trim(),
+                    direccion: direccion.value.trim(),
                     email: email.value.trim(),
+                    telefono: telefono.value.trim(),
                     password: password.value.trim(),
                     passwordConfirm: passwordConfirm.value.trim()
                 };
     
                 // Enviar los datos al servidor usando fetch
-                fetch('ruta_del_servidor/guardarFormulario', {
+                fetch('../PHP/registroCentro.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json' // Usamos JSON

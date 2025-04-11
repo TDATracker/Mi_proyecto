@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css"
         rel="stylesheet">
-    <title>Document</title>
+    <title>TDATracker</title>
 </head>
 
 <body>
@@ -35,7 +35,7 @@
                     <a class="nav-link" href="#contacto">Contacto</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link " href="./inicio_sesion.html">Inicio sesión</a>
+                  <a class="nav-link " href="./PHP/inicio_sesion.php">Inicio sesión</a>
                 </li>
             </ul>
         </div>
@@ -48,7 +48,7 @@
         <div class="container">
             <h1 class="display-3 fw-bold">Bienvenido a TDATracker</h1>
             <p class="lead fw-bold">Explora contenido sobre el TDA de una manera interactiva.</p>
-            <a href="#explorar" class="btn btn-primary btn-lg custom-btn">Explorar </a>
+            <a href="./PHP/inicio_sesion.php" class="btn btn-primary btn-lg custom-btn">Explorar </a>
         </div>
     </header>
 
@@ -167,24 +167,27 @@
             <!-- Formulario de contacto -->
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    <form>
+                    <form action="./PHP/enviar_formulario.php" method="POST">
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" placeholder="Escribe tu nombre">
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe tu nombre">
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="email" placeholder="ejemplo@correo.com">
+                            <input type="email" class="form-control" id="email" name="email"
+                                placeholder="ejemplo@correo.com">
                         </div>
                         <div class="mb-3">
                             <label for="mensaje" class="form-label">Mensaje</label>
-                            <textarea class="form-control" id="mensaje" rows="5"
+                            <textarea class="form-control" id="mensaje" name="mensaje" rows="5"
                                 placeholder="Escribe tu mensaje aquí"></textarea>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary btn-contacto">Enviar Mensaje</button>
                         </div>
                     </form>
+                    <!-- Mostrar el mensaje debajo del formulario -->
+                    <div id="mensaje-alerta" class="mt-3"></div>
                 </div>
             </div>
 
@@ -259,34 +262,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-    <script>
-        /* para dejar el boton de EXPLORAR a su estado original */
-        document.querySelector('.btn-primary').addEventListener('mouseup', function () {
-            this.blur(); // Elimina el estado de enfoque o activo
-        });
-
-        /* control del boton flotante para llevar al inicio */
-        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
-        const navbarHeight = document.querySelector(".navbar").offsetHeight;
-
-        // Mostrar/Ocultar el botón según el scroll
-        window.addEventListener("scroll", () => {
-            if (window.scrollY > navbarHeight) {
-                scrollToTopBtn.style.display = "block"; // Muestra el botón cuando se desplaza
-            } else {
-                scrollToTopBtn.style.display = "none"; // Ocúltalo si está en la parte superior
-            }
-        });
-
-        // Función para desplazarse al principio
-        scrollToTopBtn.addEventListener("click", () => {
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth", // Desplazamiento suave
-            });
-        });
+        crossorigin="anonymous">
     </script>
+    <script src="./JS/index.js"></script>
 </body>
 
 </html>

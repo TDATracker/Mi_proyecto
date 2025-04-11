@@ -20,30 +20,25 @@
             <h3 class="text-center mb-3">Iniciar Sesión</h3>
             
             <!-- Formulario de inicio de sesión -->
-            <form id="login-form">
-                <!-- Ingresar el correo electrónico + con icono -->
+            <form id="login-form" action="./PHP/inicio_sesion.php" method="post" novalidate>
                 <div class="mb-3">
                     <label for="email" class="form-label">Correo Electrónico</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                        <input type="email" class="form-control" id="email" placeholder="Ingrese su correo" required>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su correo" required>
                     </div>
-                    <p id="email-error" class="text-danger small"></p> <!-- Mensaje de error -->
                 </div>
-                
-                <!-- Ingresar la contraseña + con icono -->
+            
                 <div class="mb-3">
                     <label for="password" class="form-label">Contraseña</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
-                        <input type="password" class="form-control" id="password" placeholder="Ingrese su contraseña" required>
+                        <input type="password" class="form-control" id="password" name="Contrasena" placeholder="Ingrese su contraseña" required>
                     </div>
-                    <p id="password-error" class="text-danger small"></p> <!-- Mensaje de error -->
                 </div>
-                
-                <!-- Enviar el formulario -->
+            
                 <button type="submit" class="btn btn-primary w-100">Ingresar</button>
-            </form>
+            </form>            
             
             <!-- Recuperar la contraseña -->
             <div class="text-center mt-3">
@@ -58,7 +53,7 @@
     
     <!-- Script de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Vincular el archivo de validación -->
-    <script src="./JS/validacion_iniciar_sesion.js"></script>
+    
+    
 </body>
 </html>
