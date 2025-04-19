@@ -3,7 +3,7 @@ session_start();
 require('../util/conexion.php');
 
 // Verificar si el usuario está logueado
-if (!isset($_SESSION['usuario_id'])) {
+if (!isset($_SESSION['especialista_id'])) {
     header('Location: inicio_sesion.php');
     exit;
 }
@@ -14,23 +14,23 @@ $mensaje_error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pass_actual = $_POST['pass_actual'];
     $pass_nueva = $_POST['pass_nueva'];
-    $usuario_id = $_SESSION['usuario_id']; // Usar el ID del usuario
+    $especialista_id = $_SESSION['especialista_id']; // Usar el ID del especialista
 
     // Verificar la contraseña actual
-    $query = "SELECT Contrasena FROM Usuario WHERE Id = ?";
+    $query = "SELECT Contrasena FROM Especialista WHERE Id = ?";
     $stmt = $_conexion->prepare($query);
-    $stmt->bind_param('i', $usuario_id);
+    $stmt->bind_param('i', $especialista_id);
     $stmt->execute();
     $resultado = $stmt->get_result();
-    $usuario = $resultado->fetch_assoc();
+    $especialista = $resultado->fetch_assoc();
 
-    if ($usuario && password_verify($pass_actual, $usuario['Contrasena'])) {
+    if ($especialista && password_verify($pass_actual, $especialista['Contrasena'])) {
         // La contraseña actual es correcta, actualizar a la nueva contraseña
         $pass_nueva_hash = password_hash($pass_nueva, PASSWORD_DEFAULT);
         
-        $query_update = "UPDATE Usuario SET Contrasena = ? WHERE Id = ?";
+        $query_update = "UPDATE Especialista SET Contrasena = ? WHERE Id = ?";
         $stmt_update = $_conexion->prepare($query_update);
-        $stmt_update->bind_param('si', $pass_nueva_hash, $usuario_id); // Usar usuario_id aquí
+        $stmt_update->bind_param('si', $pass_nueva_hash, $especialista_id); // Usar especialista_id aquí
         
         if ($stmt_update->execute()) {
             $mensaje_exito = "Contraseña actualizada correctamente";
