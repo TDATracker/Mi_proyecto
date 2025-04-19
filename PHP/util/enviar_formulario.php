@@ -1,4 +1,5 @@
 <?php
+$config = include('config.php');
 $mensaje = '';
 $mensajeClase = '';
 
@@ -15,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensajeClase = "alert-danger";
     } else {
         // Configuración de la API de Brevo (como ya lo tienes)
-        $config = include('PHP/config.php');
+        
         $apiKey = $config['SENDINBLUE_API_KEY'];
         $url = "https://api.brevo.com/v3/smtp/email";
 
@@ -56,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Asegúrate de que no haya salida previa antes de usar header()
     // Redirige al usuario a la página de contacto con el mensaje y clase de mensaje
-    header("Location: index.html?mensaje=" . urlencode($mensaje) . "&mensaje_clase=" . urlencode($mensajeClase));
+    header("Location: ../../index.html?mensaje=" . urlencode($mensaje) . "&mensaje_clase=" . urlencode($mensajeClase). "#mensaje-alerta");
     exit; // Detiene la ejecución del script después de la redirección
 }
 ?>

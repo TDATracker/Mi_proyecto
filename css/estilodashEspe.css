@@ -1,0 +1,219 @@
+/* Establecer que todo el contenido use el 100% de altura */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #eee;
+}
+
+/* Fondo degradado oscuro */
+body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    background-attachment: fixed;
+}
+body .navbar {
+    background: rgba(20, 20, 20, 0.85) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    border-bottom: 1px solid #444;
+}
+
+/* Navbar superior */
+.navbar {
+    background: rgba(20, 20, 20, 0.85);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    border-bottom: 1px solid #444;
+}
+
+/* Marca del navbar */
+.navbar-brand {
+    font-weight: bold;
+    color: #00c6ff;
+}
+
+/* Botón cerrar sesión */
+.btn-outline-danger {
+    border-radius: 25px;
+    border-width: 2px;
+    padding: 6px 16px;
+    transition: 0.3s ease;
+    font-weight: bold;
+    color: #ff4c4c;
+    border-color: #ff4c4c;
+    background-color: transparent;
+}
+
+.btn-outline-danger:hover {
+    background-color: #ff4c4c;
+    color: white;
+}
+
+/* Secciones tipo "card" laterales */
+.card {
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    color: #eee;
+}
+
+/* Título de secciones */
+.card h3, .card h4 {
+    color: #00c6ff;
+}
+
+/* Botones de usuario asignado */
+.btn-outline-primary {
+    border-radius: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background-color: transparent;
+    color: #00c6ff;
+    border-color: #00c6ff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #00c6ff;
+    color: white;
+}
+
+/* Botón realizar llamada */
+#btnLlamar {
+    width: 100%;
+    background: linear-gradient(to right, #00c6ff, #7f00ff);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    padding: 10px;
+    transition: transform 0.2s;
+}
+
+#btnLlamar:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 10px rgba(127, 0, 255, 0.3);
+}
+
+/* Contenedor derecho */
+.contenedor-derecho {
+    background: rgba(30, 30, 30, 0.85);
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    padding: 20px;
+    min-height: 500px;
+    color: #fff;
+}
+
+/* FullCalendar modo oscuro */
+.fc {
+    background-color: transparent !important;
+    color: #fff;
+}
+
+.fc-daygrid-day-number,
+.fc-col-header-cell-cushion,
+.fc-event-title,
+.fc-daygrid-event {
+    color: #ffffff !important;
+    text-shadow: 0 0 4px rgba(0,0,0,0.6);
+    font-weight: bold;
+}
+
+/* Fondo de eventos */
+.fc-event {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    color: #fff;
+}
+
+.fc-event-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.fc-event-title span {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+}
+
+/* Estilos para la lista de tareas */
+#tareasUsuario {
+    color: #eee;
+}
+
+#tareasUsuario h4 {
+    margin-bottom: 20px;
+    color: #00c6ff;
+    font-weight: bold;
+}
+
+.list-group-item {
+    background: rgba(40, 40, 40, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
+    border-radius: 10px;
+    color: #eee;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background: rgba(50, 50, 50, 0.8);
+    transform: translateX(5px);
+}
+
+.list-group-item .task-status {
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.list-group-item .task-completed {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.list-group-item .task-date {
+    font-size: 0.85em;
+    color: #00c6ff;
+    display: block;
+    margin-top: 5px;
+}
+
+.list-group-item .task-description {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Scroll personalizado para la lista de tareas */
+#tareasUsuario .list-group {
+    max-height: 500px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #00c6ff rgba(255, 255, 255, 0.1);
+}
+
+#tareasUsuario .list-group::-webkit-scrollbar {
+    width: 6px;
+}
+
+#tareasUsuario .list-group::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+#tareasUsuario .list-group::-webkit-scrollbar-thumb {
+    background: #00c6ff;
+    border-radius: 3px;
+}

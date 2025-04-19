@@ -56,37 +56,45 @@ function escapeHTML(str) {
 }
 
 // Validación en JavaScript antes de enviar el formulario
-document.getElementById('contactForm').addEventListener('submit', function (e) {
-    let nombre = document.getElementById('nombre').value.trim();
-    let email = document.getElementById('email').value.trim();
-    let mensaje = document.getElementById('mensaje').value.trim();
-    let errorMsg = '';
 
-    // Validación del nombre
-    if (nombre === '') {
-        errorMsg += 'El nombre es obligatorio. <br>';
-    } else {
-        nombre = escapeHTML(nombre);  // Sanitización del nombre
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    const contactForm = document.getElementById('contactForm');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', function (e) {
+            let nombre = document.getElementById('nombre').value.trim();
+            let email = document.getElementById('email').value.trim();
+            let mensaje = document.getElementById('mensaje').value.trim();
+            let errorMsg = '';
 
-    // Validación del correo electrónico
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailPattern.test(email)) {
-        errorMsg += 'Por favor, ingrese un correo electrónico válido. <br>';
-    } else {
-        email = escapeHTML(email);  // Sanitización del correo
-    }
+            // Validación del nombre
+            if (nombre === '') {
+                errorMsg += 'El nombre es obligatorio. <br>';
+            } else {
+                nombre = escapeHTML(nombre);  // Sanitización del nombre
+            }
 
-    // Validación del mensaje
-    if (mensaje === '') {
-        errorMsg += 'El mensaje es obligatorio. <br>';
-    } else {
-        mensaje = escapeHTML(mensaje);  // Sanitización del mensaje
-    }
+            // Validación del correo electrónico
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (!emailPattern.test(email)) {
+                errorMsg += 'Por favor, ingrese un correo electrónico válido. <br>';
+            } else {
+                email = escapeHTML(email);  // Sanitización del correo
+            }
 
-    // Si hay errores, mostramos el mensaje y evitamos el envío
-    if (errorMsg !== '') {
-        e.preventDefault();
-        document.getElementById('mensaje-alerta').innerHTML = '<div class="alert alert-danger">' + errorMsg + '</div>';
+            // Validación del mensaje
+            if (mensaje === '') {
+                errorMsg += 'El mensaje es obligatorio. <br>';
+            } else {
+                mensaje = escapeHTML(mensaje);  // Sanitización del mensaje
+            }
+
+            // Si hay errores, mostramos el mensaje y evitamos el envío
+            if (errorMsg !== '') {
+                e.preventDefault();
+                document.getElementById('mensaje-alerta').innerHTML = '<div class="alert alert-danger">' + errorMsg + '</div>';
+            }
+        });
     }
 });
+

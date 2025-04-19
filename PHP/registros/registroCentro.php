@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // Conexión a la base de datos
-require('./util/conexion.php');
+require('../util/conexion.php');
 
 // Establecemos que la respuesta será JSON
 header('Content-Type: application/json');
@@ -20,17 +20,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Extraemos los datos del formulario
     $tmp_nombre = $data["nombre"];
-    $tmp_apellido = $data["apellido"];
-    $tmp_pass = $data["password"];
-    $tmp_telefono = $data["telefono"];
-    $tmp_genero = $data["genero"];
+    $tmp_direccion = $data["direccion"];
     $tmp_email = $data["email"];
+    $tmp_telefono = $data["telefono"];
+    $tmp_pass = $data["password"];
+
 
     // Ciframos la contraseña
     $pass_cifrada = password_hash($tmp_pass, PASSWORD_DEFAULT);
 
     // Verificamos si el correo ya está registrado
-    $sql_check = $_conexion->prepare("SELECT Id FROM Usuario WHERE Email = ?");
+    $sql_check = $_conexion->prepare("SELECT Id FROM Centro WHERE Email = ?");
     $sql_check->bind_param("s", $tmp_email);
     $sql_check->execute();
     $sql_check->store_result();
@@ -41,9 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Insertamos los datos del usuario en la base de datos
-    $sql_insert = $_conexion->prepare("INSERT INTO Usuario (Email, Contrasena, Genero, Nombre, Apellidos, Telefono) VALUES (?, ?, ?, ?, ?, ?)");
-    $sql_insert->bind_param("ssssss", $tmp_email, $pass_cifrada, $tmp_genero, $tmp_nombre, $tmp_apellido, $tmp_telefono);
+    // Insertamos los datos del centro en la base de datos
+    $sql_insert = $_conexion->prepare("INSERT INTO Centro (Nombre, Direccion, Email, Telefono, contrasena) VALUES (?, ?, ?, ?, ?)");
+    $sql_insert->bind_param("sssss", $tmp_nombre, $tmp_direccion, $tmp_email, $tmp_telefono, $pass_cifrada);
 
     if ($sql_insert->execute()) {
         echo json_encode(["success" => true, "message" => "Registro exitoso."]);

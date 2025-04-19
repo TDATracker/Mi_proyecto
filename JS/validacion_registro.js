@@ -24,13 +24,13 @@ document.addEventListener("DOMContentLoaded", function () {
         
         switch(formType) {
             case "form1":
-                formFile = "formulario_usuario.html";
+                formFile = "../html/formulario_usuario.html";
                 break;
             case "form2":
-                formFile = "formulario_especialista.html";
+                formFile = "../html/formulario_especialista.html";
                 break;
             case "form3":
-                formFile = "formulario_centros.html";
+                formFile = "../html/formulario_centros.html";
                 break;
         }
 
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             // Enviar los datos al servidor usando fetch
-            fetch('../PHP/registroUsuario.php', {
+            fetch('../PHP/registros/registroUsuario.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json' // Usamos JSON
@@ -329,38 +329,43 @@ document.addEventListener("DOMContentLoaded", function () {
             // Si hay algún error, detener el envío del formulario
             if (!esValido) {
                 return;
-            } else {
+            } 
+            
                 const formData = {
                     nombre: nombre.value.trim(),
                     apellido: apellido.value.trim(),
                     email: email.value.trim(),
                     genero: genero.value.trim(),
                     password: password.value.trim(),
-                    passwordConfirm: passwordConfirm.value.trim()
+                    passwordConfirm: passwordConfirm.value.trim(),
+                    telefono: telefono.value.trim()
                 };
     
-                // Enviar los datos al servidor usando fetch
-                fetch('../PHP/registroEspecialista.php', {
+                fetch('../PHP/registros/registroEspecialista.php', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json' // Usamos JSON
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData) // Convertir el objeto en una cadena JSON
+                    body: JSON.stringify(formData)
                 })
-                .then(response => response.json()) // Procesamos la respuesta del servidor
-                .then(data => {
-                    if (data.success) {
-                        alert("Formulario enviado con éxito");
-                        form.reset(); // Limpiar el formulario
-                    } else {
-                        alert("Hubo un error al enviar el formulario");
-                    }
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Error al enviar el formulario. Por favor, intente nuevamente.");
-                });
-            }
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error en la respuesta del servidor: " + response.status);
+                        }
+                        return response.json(); // Verifica que sea JSON
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            alert("Formulario enviado con éxito");
+                            form.reset(); // Limpiar el formulario
+                        } else {
+                            alert("Error del servidor: " + data.error); // Mostrar error desde el servidor
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error en el fetch:", error);
+                        alert("Error al enviar el formulario. Por favor, intente nuevamente.");
+                    }); 
         });
     }    
 
@@ -481,7 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 };
     
                 // Enviar los datos al servidor usando fetch
-                fetch('../PHP/registroCentro.php', {
+                fetch('../PHP/registros/registroCentro.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json' // Usamos JSON

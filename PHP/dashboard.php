@@ -1,38 +1,62 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start();
+require_once './util/conexion.php';
+
+// Verificación de sesión
+if (!isset($_SESSION["usuario"])) {
+    header("location: ./inicio_sesion.php");
+    exit;
+}
+
+// Recuperar nombre del especialista si está logueado
+$nombre_especialista = "No asignado";
+if (isset($_SESSION["especialista_id"])) {
+    $especialista_id = $_SESSION["especialista_id"];
+    if (isset($_conexion)) {
+        $stmt = $_conexion->prepare("SELECT Nombre FROM Especialista WHERE Id = ?");
+        $stmt->bind_param("i", $especialista_id);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        if ($fila = $resultado->fetch_assoc()) {
+            $nombre_especialista = $fila["Nombre"];
+        }
+        $stmt->close();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TDATracker</title>
-    <!-- Cargar el CSS de Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Cargar el CSS de FullCalendar (calendario) -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
-    <!-- Cargar los íconos de Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Cargar el CSS personalizado -->
-    <link rel="stylesheet" href="./css/dashboard.css">
-</head>
+    <title>Dashboard</title>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FullCalendar CSS -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css' rel='stylesheet' />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
 <body>
-    <!-- Barra de navegación mejorada y responsiva -->
+    <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
-            <!-- Botón modo oscuro -->
             <button class="btn btn-custom order-1 order-lg-1 modo-switch me-2" type="button">🌙 Modo Oscuro</button>
-
-            <!-- Logo -->
-            <a class="navbar-brand mx-auto order-2 order-lg-2" href="#">TDATracker</a>
-
-            <!-- Botón hamburguesa para móviles -->
+            <a class="navbar-brand mx-auto order-2 order-lg-2" href="../index.html">TDATracker</a>
             <button class="navbar-toggler order-3" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarOpciones" aria-controls="navbarOpciones" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- Opciones colapsables -->
             <div class="collapse navbar-collapse order-4 mt-2 mt-lg-0 justify-content-end" id="navbarOpciones">
                 <div class="d-flex flex-column flex-lg-row gap-2">
                     <button class="btn btn-custom" onclick="cambiarContrasena()">Configuración</button>
@@ -41,17 +65,10 @@
             </div>
         </div>
     </nav>
-    <?php
-    session_start();
-    if (isset($_SESSION["usuario"])) { ?>
-        <h1 class="text-center">Hola <?php echo  $_SESSION["usuario"]; ?></h1>
-    <?php } else {
-        header("location: ./PHP/inicio_sesion.php"); //he añadido los puntos
-        exit;
-    }
-    ?>
 
-    <!-- Contenido principal -->
+    <h1 class="text-center">Hola <?php echo htmlspecialchars($_SESSION["usuario"]); ?></h1>
+    <p class="text-center">Tu especialista: <?php echo htmlspecialchars($nombre_especialista); ?></p>
+
     <div class="container mt-4">
         <h1 class="text-center">Bienvenido a TDATracker</h1>
         <div class="container-grid">
@@ -72,28 +89,22 @@
                 <input type="text" id="nuevaTarea" class="form-control mt-2" placeholder="Nueva tarea">
                 <button class="btn btn-custom mt-2" onclick="agregarTarea()">Agregar Tarea</button>
 
-                <div class="musica-container">
+                <div class="musica-container mt-4">
                     <h4>🎵 Música relajante e inspiradora</h4>
-                    <iframe width="560" height="315"
+                    <iframe width="100%" height="315"
                         src="https://www.youtube.com/embed/videoseries?list=PLc1QuYTjzGnYxoRylLoyJB-Qs-5NKrGh6"
                         title="YouTube playlist" frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
+                        allowfullscreen></iframe>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="recuadros-adicionales">
+    <div class="recuadros-adicionales text-center mt-5">
         <div class="recuadro">🎮 Minijuegos <br> En construcción</div>
-        <!-- Botón de videollamada -->
-        <div class="text-center">
-            <button class="btn btn-primary mt-4" onclick="iniciarVideollamada()">📹 Iniciar Videollamada</button>
-        </div>
+        <button class="btn btn-primary mt-4" onclick="iniciarVideollamada()">📹 Iniciar Videollamada</button>
     </div>
-
-
 
     <!-- Modal de Nota -->
     <div class="modal fade" id="modalNota" tabindex="-1" aria-labelledby="modalNotaLabel" aria-hidden="true">
@@ -131,11 +142,18 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales-all.js'></script>
     <script src="https://meet.jit.si/external_api.js"></script>
-    <script src="./JS/dashboard.js"></script>
-</body>
+    <script>
+    // Asegúrate de pasar las variables PHP al JavaScript
+    const usuarioId = <?php echo $_SESSION['usuario_id']; ?>;
+    const especialistaId = <?php echo isset($_SESSION['especialista_id']) ? $_SESSION['especialista_id'] : 'null'; ?>;
+</script>
+<script> window.chtlConfig = { chatbotId: "2491132924" } </script>
+    <script async data-id="2491132924" id="chatling-embed-script" type="text/javascript" src="https://chatling.ai/js/embed.js"></script>
 
+    <script src="../JS/dashboard.js"></script>
+</body>
 </html>

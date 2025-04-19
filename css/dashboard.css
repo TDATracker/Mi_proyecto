@@ -89,6 +89,11 @@ body {
     margin-right: 5px;
 }
 
+.tarea-completada {
+    text-decoration: line-through;
+    color: #888;
+}
+
 /* Música debajo de tareas */
 .musica-container {
     margin-top: 50px;

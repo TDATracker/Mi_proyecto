@@ -1,22 +1,22 @@
-<h4 class="text-center mb-4"><i class="fas fa-user me-2"></i>Registro Especialista/Tutor</h4>
-<form id="form-basico">
+<h4 class="text-center mb-4"><i class="fas fa-user-plus me-2"></i>Registro Usuario</h4>
+<form id="form-usuario">
     <!-- Fila para Nombre y Apellido -->
     <div class="row g-3">
         <div class="col-md-6">
-            <label for="nombre2" class="form-label">Nombre</label>
+            <label for="nombre" class="form-label">Nombre</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" class="form-control" id="nombre2" placeholder="Ingrese su nombre" required>
+                <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre" required>
             </div>
-            <p id="nombre2-error" class="text-danger small mt-1 mb-0"></p>
+            <p id="nombre-error" class="text-danger small mt-1 mb-0"></p>
         </div>
         <div class="col-md-6">
-            <label for="apellido2" class="form-label">Apellido</label>
+            <label for="apellido" class="form-label">Apellidos</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                <input type="text" class="form-control" id="apellido2" placeholder="Ingrese su apellido" required>
+                <input type="text" class="form-control" id="apellido" placeholder="Ingrese su apellido" required>
             </div>
-            <p id="apellido2-error" class="text-danger small mt-1 mb-0"></p>
+            <p id="apellido-error" class="text-danger small mt-1 mb-0"></p>
         </div>
     </div>
 
@@ -26,7 +26,7 @@
             <label for="email" class="form-label">Correo Electrónico</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                <input type="email" class="form-control" id="email2" placeholder="ejemplo@dominio.com" required>
+                <input type="email" class="form-control" id="email" placeholder="ejemplo@dominio.com" required>
             </div>
             <p id="email-error" class="text-danger small mt-1 mb-0"></p>
         </div>
@@ -55,25 +55,25 @@
     <!-- Fila para Género y Teléfono -->
     <div class="row g-3">
         <div class="col-md-6">
-            <label for="genero2" class="form-label">Género</label>
+            <label for="genero" class="form-label">Género</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
-                <select class="form-select" id="genero2" required>
+                <select class="form-select" id="genero">
                     <option value="" selected disabled>Seleccionar...</option>
                     <option value="masculino">Masculino</option>
                     <option value="femenino">Femenino</option>
                     <option value="otro">Otro</option>
                 </select>
             </div>
-            <p id="genero2-error" class="text-danger small mt-1 mb-0"></p>
+            <p id="genero-error" class="text-danger small mt-1 mb-0"></p>
         </div>
         <div class="col-md-6">
-            <label for="telefono2" class="form-label">Teléfono</label>
+            <label for="telefono" class="form-label">Teléfono</label>
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                <input type="tel" class="form-control" id="telefono2" placeholder="9 dígitos" required>
+                <input type="tel" class="form-control" id="telefono" placeholder="9 dígitos" required>
             </div>
-            <p id="telefono2-error" class="text-danger small mt-1 mb-0"></p>
+            <p id="telefono-error" class="text-danger small mt-1 mb-0"></p>
         </div>
     </div>
 
@@ -82,6 +82,6 @@
     </button>
 
     <div class="text-center mt-3">
-        <a href="./inicio_sesion.html">Iniciar Sesión</a>
+        <a href="../PHP/inicio_sesion.php">Iniciar Sesión</a>
     </div>
 </form>

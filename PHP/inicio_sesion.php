@@ -1,42 +1,97 @@
 <?php
-// Incluye el archivo de conexión a la base de datos
+session_start(); // ✅ Siempre antes de usar $_SESSION
+ini_set('display_errors', 1); // ⚠️ Solo para depuración, quitar en producción
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require('./util/conexion.php'); 
 
-// Manejo de la solicitud POST para iniciar sesión
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST["email"];
-    $contrasena = trim($_POST["contrasena"]);
+    $email = $_POST["email"] ?? '';
+    $contrasena = trim($_POST["contrasena"] ?? '');
 
-    // Preparar la consulta SQL para verificar el usuario
-    if (isset($email) && isset($contrasena)) {
+    if (!empty($email) && !empty($contrasena)) {
+        // Verificar si es Usuario
         $sql = $_conexion->prepare("SELECT * FROM Usuario WHERE Email = ?");
-        $sql->bind_param("s", $email);
-        $sql->execute();
-        $resultado = $sql->get_result();
-        $_conexion->close();
+        if ($sql) {
+            $sql->bind_param("s", $email);
+            $sql->execute();
+            $resultado = $sql->get_result();
 
-        // Verificar si el usuario existe
-        if ($resultado->num_rows == 0) {
-            $err_email = "El correo $email no está registrado";
-        } else {
-            $datos_usuario = $resultado->fetch_assoc();
+            if ($resultado->num_rows > 0) {
+                $datos_usuario = $resultado->fetch_assoc();
+                if (password_verify($contrasena, $datos_usuario["Contrasena"])) {
+                    $_SESSION["usuario"] = $datos_usuario["Nombre"];
+                    $_SESSION["usuario_id"] = $datos_usuario["Id"];
+                    $_SESSION["especialista_id"] = $datos_usuario["Especialista_id"] ?? null; // ✅ Si tiene Especialista asignado
 
-            // Verificar si la contraseña es correcta
-            $acceso_concedido = password_verify($contrasena, $datos_usuario["Contrasena"]);
-            if ($acceso_concedido) {
-                // Iniciar sesión y redirigir
-                session_start();
-                $_SESSION["usuario"] = $datos_usuario["Nombre"];
-                header("location:../dashboard.php");
-                exit;
+                    error_log("LOGIN USUARIO ID: " . $_SESSION["usuario_id"]);
+                    error_log("Especialista relacionado (si existe): " . var_export($_SESSION["especialista_id"], true));
+
+                    header("Location: ./dashboard.php");
+                    exit;
+                } else {
+                    $err_contrasena = "La contraseña es incorrecta";
+                }
             } else {
-                $err_contrasena = "La contraseña es incorrecta";
+                // Verificar si es Especialista
+                $sql_especialista = $_conexion->prepare("SELECT * FROM Especialista WHERE Email = ?");
+                if ($sql_especialista) {
+                    $sql_especialista->bind_param("s", $email);
+                    $sql_especialista->execute();
+                    $resultado_especialista = $sql_especialista->get_result();
 
+                    if ($resultado_especialista->num_rows > 0) {
+                        $datos_especialista = $resultado_especialista->fetch_assoc();
+                        if (password_verify($contrasena, $datos_especialista["Contrasena"])) {
+                            $_SESSION["especialista_id"] = $datos_especialista["Id"];
+                            $_SESSION["especialista_nombre"] = $datos_especialista["Nombre"];
+
+                            error_log("LOGIN ESPECIALISTA ID: " . $_SESSION["especialista_id"]);
+
+                            header("Location: ./dashboardEspecialista.php");
+                            exit;
+                        } else {
+                            $err_contrasena = "La contraseña es incorrecta";
+                        }
+                    } else {
+                        // Verificar si es Centro
+                        $sql_centro = $_conexion->prepare("SELECT * FROM Centro WHERE Email = ?");
+                        if ($sql_centro) {
+                            $sql_centro->bind_param("s", $email);
+                            $sql_centro->execute();
+                            $resultado_centro = $sql_centro->get_result();
+
+                            if ($resultado_centro->num_rows > 0) {
+                                $datos_centro = $resultado_centro->fetch_assoc();
+                                if (password_verify($contrasena, $datos_centro["contrasena"])) {
+                                    $_SESSION["centro_id"] = $datos_centro["Id"];
+                                    $_SESSION["centro_nombre"] = $datos_centro["Nombre"];
+
+                                    error_log("LOGIN CENTRO ID: " . $_SESSION["centro_id"]);
+
+                                    header("Location: ./dashboardCentro.php");
+                                    exit;
+                                } else {
+                                    $err_contrasena = "La contraseña es incorrecta";
+                                }
+                            } else {
+                                $err_email = "El correo $email no está registrado en ninguna cuenta";
+                            }
+                        }
+                    }
+                }
             }
         }
+    } else {
+        $err_email = "Por favor ingrese el correo y la contraseña.";
     }
+
+    $_conexion->close();
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -52,9 +107,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="container">
         <h1>Iniciar sesión</h1>
-        
+
         <a class="nav-link btn btn-primary w-100" href="../index.html">Inicio</a>
-        
+
         <!-- Contenedor principal -->
         <div class="container d-flex justify-content-center align-items-center vh-100">
             <!-- Tarjeta con sombra -->
@@ -69,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su correo" required>
                         </div>
                         <!-- Mostrar mensaje de error si el correo no está registrado -->
-                        <?php if (isset($err_email)) echo "<span class='error'>$err_email</span>"; ?>
+                        <?php if (isset($err_email)) echo "<span class='error text-danger'>$err_email</span>"; ?>
                     </div>
 
                     <div class="mb-3">
@@ -79,7 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <input type="password" class="form-control" id="password" name="contrasena" placeholder="Ingrese su contraseña" required>
                         </div>
                         <!-- Mostrar mensaje de error si la contraseña es incorrecta -->
-                        <?php if (isset($err_contrasena)) echo "<span class='error'>$err_contrasena</span>"; ?>
+                        <?php if (isset($err_contrasena)) echo "<span class='error text-danger'>$err_contrasena</span>"; ?>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100">Ingresar</button>
@@ -91,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
 
                 <div class="text-center mt-3">
-                    <a href="../registro_usuario.html">Registrarse</a>
+                    <a href="../html/registro_usuario.html">Registrarse</a>
                 </div>
             </div>
         </div>
@@ -99,6 +154,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Script de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
 </body>
 </html>

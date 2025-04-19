@@ -1,7 +1,12 @@
+let calendar;
+let selectedDate = null;
+const tareasPorFecha = {};
+const estadosTareas = {};
+
 document.addEventListener('DOMContentLoaded', function () {
     // Inicializar el calendario
     const calendarEl = document.getElementById('calendar');
-    const calendar = new FullCalendar.Calendar(calendarEl, {
+    calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth', // Vista inicial: vista de mes
         locale: 'es', // Establecer el idioma del calendario a español
         dateClick: function (info) {
@@ -34,71 +39,133 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     calendar.render(); // Renderizar el calendario
-
-    let selectedDate = null; // Variable para almacenar la fecha seleccionada
-    const tareasPorFecha = {}; // Objeto para almacenar tareas por fecha
-    const estadosTareas = {}; // Objeto para almacenar el estado de cada tarea (marcada/desmarcada)
+    cargarNotas();
+    cargarEstadosAnimo();
+    cargarTareas();
 
     // Función para agregar una emoción a un día específico
     window.agregarEmocion = function (emocion) {
         if (selectedDate) {
-            const eventId = Date.now(); // Usar el timestamp como ID único para la emoción
-            // Agregar evento (emoción) al calendario
-            calendar.addEvent({
-                id: eventId, // Asignar el ID único
-                title: emocion,
-                start: selectedDate,
-                allDay: true
-            });
-            alert("Estado de ánimo agregado: " + emocion);
-
-            // Asignar el ID al botón de borrar si es necesario
-            document.getElementById('btnBorrarNota').setAttribute('data-event-id', eventId);
+            fetch('../PHP/animo/guardarAnimo.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    tipo: emocion,
+                    fecha: selectedDate
+                })
+            })
+                .then(response => response.json()) // Manejar respuesta en formato JSON
+                .then(data => {
+                    if (data.success) {
+                        calendar.addEvent({
+                            id: data.id,
+                            title: emocion,
+                            start: selectedDate,
+                            allDay: true,
+                            className: 'emotion-event'
+                        });
+                        alert("Estado de ánimo guardado correctamente");
+                    } else {
+                        alert("Error al guardar el estado de ánimo: " + data.message || "Error desconocido");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Error al guardar el estado de ánimo: " + error.message);
+                });
         } else {
-            alert("Selecciona una fecha primero.");
+            alert("Selecciona una fecha primero");
         }
     };
 
     // Función para agregar una nota a un día específico
     window.agregarNota = function () {
         if (selectedDate) {
-            const nota = document.getElementById('nota').value; // Obtener la nota escrita
-            const eventId = Date.now(); // Usar el timestamp como ID único
+            const nota = document.getElementById('nota').value;
+            if (!nota.trim()) {
+                alert("Por favor escribe una nota");
+                return;
+            }
 
-            // Agregar evento (nota) al calendario con un ID único
-            calendar.addEvent({
-                id: eventId, // Asignar el ID único
-                title: nota,
-                start: selectedDate,
-                allDay: true
-            });
-
-            // Asignar el ID al botón de borrar
-            document.getElementById('btnBorrarNota').setAttribute('data-event-id', eventId);
-
-            document.getElementById('nota').value = ''; // Limpiar el campo de nota
-            alert("Nota agregada.");
+            fetch('../PHP/nota/guardarNota.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    descripcion: nota,
+                    fecha: selectedDate
+                })
+            })
+                .then(response => response.json()) // Manejar respuesta en formato JSON
+                .then(data => {
+                    if (data.success) {
+                        calendar.addEvent({
+                            id: data.id,
+                            title: nota,
+                            start: selectedDate,
+                            allDay: true
+                        });
+                        document.getElementById('nota').value = '';
+                        alert("Nota guardada correctamente");
+                    } else {
+                        alert("Error al guardar la nota: " + data.message || "Error desconocido");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Error al guardar la nota");
+                });
         } else {
-            alert("Selecciona una fecha primero.");
+            alert("Selecciona una fecha primero");
         }
     };
+
     // Función para eliminar la nota o emoción
     document.getElementById('btnBorrarNota').addEventListener('click', function () {
-        const eventId = this.getAttribute('data-event-id'); // Obtener el ID del evento (nota o emoción)
-        console.log("Event ID en el botón de borrar:", eventId); // Verificar si el ID se obtiene correctamente
+        const eventId = this.getAttribute('data-event-id');
 
         if (eventId) {
-            const event = calendar.getEventById(eventId); // Obtener el evento por ID
+            const event = calendar.getEventById(eventId);
 
             if (event) {
-                event.remove(); // Eliminar el evento del calendario
-                console.log("Evento eliminado.");
+                // Mira si es una nota o una emocion
+                const isEmocion = event.classNames.includes('emotion-event');
+                const endpoint = isEmocion ? '../PHP/animo/eliminarAnimo.php' : '../PHP/nota/eliminar_nota.php';
 
-                // Cerrar el modal después de eliminar
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalNota'));
-                modal.hide(); // Cerrar el modal
+                fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        id: eventId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        event.remove(); // Eliminar el evento del calendario
+                        console.log(isEmocion ? "Emoción eliminada" : "Nota eliminada");
+
+                        // Cerrar el modal después de eliminar
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('modalNota'));
+                        modal.hide();
+                    } else {
+                        alert(`Error al eliminar: ${data.error}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Error al eliminar el elemento");
+                });
             } else {
-                alert("No se encontró el evento con ID: " + eventId); // Si no se encuentra el evento
+                alert("No se encontró el evento con ID: " + eventId);
             }
         } else {
             alert("No se pudo obtener el ID del evento.");
@@ -107,16 +174,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para agregar una tarea al día seleccionado
     window.agregarTarea = function () {
-        const tarea = document.getElementById('nuevaTarea').value; // Obtener la tarea escrita
+        const tarea = document.getElementById('nuevaTarea').value;
         if (tarea && selectedDate) {
-            if (!tareasPorFecha[selectedDate]) {
-                tareasPorFecha[selectedDate] = []; // Crear arreglo de tareas si no existe
-            }
-            tareasPorFecha[selectedDate].push(tarea); // Agregar la tarea al arreglo de tareas del día
-
-            // Actualizar la lista de tareas mostradas
-            mostrarTareasDelDia(selectedDate);
-            document.getElementById('nuevaTarea').value = ''; // Limpiar el campo de nueva tarea
+            fetch('../PHP/tarea/guardarTarea.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    descripcion: tarea,
+                    deadline: selectedDate,
+                    completada: 0
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (!tareasPorFecha[selectedDate]) {
+                        tareasPorFecha[selectedDate] = [];
+                    }
+                    tareasPorFecha[selectedDate].push(tarea);
+                    mostrarTareasDelDia(selectedDate);
+                    document.getElementById('nuevaTarea').value = '';
+                    alert("Tarea guardada correctamente");
+                } else {
+                    alert("Error al guardar la tarea: " + data.message || "Error desconocido");
+                }
+            });
         } else {
             alert("Selecciona una fecha primero.");
         }
@@ -124,38 +209,83 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para borrar una tarea
     window.borrarTarea = function (btn, tarea) {
-        const tareas = tareasPorFecha[selectedDate]; // Obtener las tareas del día seleccionado
-        const index = tareas.indexOf(tarea); // Buscar la tarea a eliminar
-        if (index > -1) {
-            tareas.splice(index, 1); // Eliminar la tarea del arreglo
-        }
-        // Actualizar la lista de tareas mostradas
-        mostrarTareasDelDia(selectedDate);
+        fetch('../PHP/tarea/eliminar_tarea.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                descripcion: tarea,
+                deadline: selectedDate
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const tareas = tareasPorFecha[selectedDate];
+                const index = tareas.indexOf(tarea);
+                if (index > -1) {
+                    tareas.splice(index, 1);
+                }
+                mostrarTareasDelDia(selectedDate);
+            } else {
+                alert("Error al eliminar la tarea: " + data.error);
+            }
+        });
     };
 
     // Función para manejar el cambio de estado del checkbox
     window.toggleCheckbox = function (checkbox, tarea) {
-        // Guardar el estado del checkbox (marcado o desmarcado) en el objeto `estadosTareas`
         estadosTareas[selectedDate + tarea] = checkbox.checked;
+        
+        fetch('../PHP/tarea/actualizarTarea.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                descripcion: tarea,
+                deadline: selectedDate,
+                completada: checkbox.checked ? 1 : 0
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("Estado de tarea actualizado");
+            } else {
+                alert("Error al actualizar el estado de la tarea: " + data.message);
+                // Revertir el checkbox si la actualización falló
+                checkbox.checked = !checkbox.checked;
+                estadosTareas[selectedDate + tarea] = checkbox.checked;
+            }
+        });
     };
 
     // Función para mostrar las tareas del día seleccionado
     function mostrarTareasDelDia(fecha) {
+        console.log("Mostrando tareas para:", fecha);
+        console.log("Tareas disponibles:", tareasPorFecha[fecha]);
+        
         const tareasLista = document.getElementById('tareasLista');
-        tareasLista.innerHTML = ''; // Limpiar la lista de tareas
+        tareasLista.innerHTML = '';
 
-        if (tareasPorFecha[fecha]) {
-            // Recorrer las tareas del día seleccionado y mostrarlas
+        if (tareasPorFecha[fecha] && tareasPorFecha[fecha].length > 0) {
             tareasPorFecha[fecha].forEach(function (tarea) {
                 const tareaItem = document.createElement('div');
                 tareaItem.classList.add('tarea-item');
-                const checked = estadosTareas[selectedDate + tarea] ? 'checked' : ''; // Comprobar si la tarea está marcada
+                const isChecked = estadosTareas[fecha + tarea];
                 tareaItem.innerHTML = `
-                    <input type="checkbox" ${checked} onchange="toggleCheckbox(this, '${tarea}')"> ${tarea} 
+                    <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleCheckbox(this, '${tarea}')"> 
+                    <span class="${isChecked ? 'tarea-completada' : ''}">${tarea}</span>
                     <button class="btn btn-sm btn-danger ms-2" onclick="borrarTarea(this, '${tarea}')">❌</button>
                 `;
-                tareasLista.appendChild(tareaItem); // Añadir la tarea a la lista
+                tareasLista.appendChild(tareaItem);
             });
+        } else {
+            tareasLista.innerHTML = '<p>No hay tareas para este día</p>';
         }
     }
 
@@ -167,78 +297,62 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+//Funciones para cargar eventos en el calendario
 
-// Función para agregar emoción y enviarla al servidor
-function agregarEmocion(emocion) {
-    if (selectedDate) {
-        fetch('guardar.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                tipo: 'emocion',
-                usuarioId: 1, // Cambia esto según el ID del usuario
-                fecha: selectedDate,
-                contenido: emocion
-            })
+// Modifica la función cargarNotas
+function cargarNotas() {
+    fetch('../PHP/nota/obtener_notas.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Notas cargadas:', data.notas); // Para debug
+                data.notas.forEach(nota => {
+                    añadirNotaAlCalendario(nota);
+                });
+            } else {
+                console.error('Error al cargar las notas:', data.error);
+            }
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    console.log("Emoción guardada: " + emocion);
-                } else {
-                    alert("Error al guardar emoción");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    } else {
-        alert("Selecciona una fecha primero.");
-    }
+        .catch(error => console.error('Error:', error));
 }
 
-
-// Función para agregar nota y enviarla al servidor
-function agregarNota() {
-    const nota = document.getElementById('nota').value;
-    if (selectedDate && nota) {
-        fetch('guardar.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                tipo: 'nota',
-                usuarioId: 1, // Cambia esto según el ID del usuario
-                fecha: selectedDate,
-                contenido: nota
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    console.log("Nota guardada");
-                    document.getElementById('nota').value = ''; // Limpiar el campo de la nota
-                } else {
-                    alert("Error al guardar la nota");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    } else {
-        alert("Selecciona una fecha y escribe una nota");
-    }
+// Modifica la función añadirNotaAlCalendario
+function añadirNotaAlCalendario(nota) {
+    calendar.addEvent({
+        id: nota.id,
+        title: nota.descripcion,
+        start: nota.fecha,
+        allDay: true
+    });
 }
 
+// Función para cargar estados de ánimo
+function cargarEstadosAnimo() {
+    fetch('../PHP/animo/obtenerAnimo.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.notas.forEach(animo => {
+                    calendar.addEvent({
+                        id: animo.id,
+                        title: animo.tipo,
+                        start: animo.fecha,
+                        allDay: true,
+                        className: 'emotion-event'
+                    });
+                });
+            } else {
+                console.error('Error al cargar los estados de ánimo:', data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
 
 // Función para manejar el cambio de estado de la tarea y enviarlo al servidor
 function toggleCheckbox(checkbox, tarea) {
     const completada = checkbox.checked;
     if (selectedDate) {
-        fetch('guardar.php', {
+        fetch('../PHP/guardar.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -266,37 +380,40 @@ function toggleCheckbox(checkbox, tarea) {
     }
 }
 
-// Función para agregar tarea y enviarla al servidor
-function agregarTarea() {
-    const tarea = document.getElementById('nuevaTarea').value;
-    if (selectedDate && tarea) {
-        fetch('guardar.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                tipo: 'tarea',
-                usuarioId: 1, // Cambia esto según el ID del usuario
-                fecha: selectedDate,
-                contenido: { tarea: tarea, completada: false }
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    console.log("Tarea agregada");
-                    document.getElementById('nuevaTarea').value = ''; // Limpiar campo
-                } else {
-                    alert("Error al agregar la tarea");
+// Función para cargar tareas
+function cargarTareas() {
+    console.log("Cargando tareas...");
+    fetch('../PHP/tarea/obtener_tareas.php')
+        .then(response => response.json())
+        .then(data => {
+            console.log("Datos recibidos:", data);
+            if (data.success) {
+                // Limpiar las tareas existentes
+                Object.keys(tareasPorFecha).forEach(key => delete tareasPorFecha[key]);
+                Object.keys(estadosTareas).forEach(key => delete estadosTareas[key]);
+
+                data.tareas.forEach(tarea => {
+                    const fecha = tarea.deadline;
+                    if (!tareasPorFecha[fecha]) {
+                        tareasPorFecha[fecha] = [];
+                    }
+                    tareasPorFecha[fecha].push(tarea.descripcion);
+                    estadosTareas[fecha + tarea.descripcion] = tarea.completada === "1" || tarea.completada === true;
+                });
+
+                // Si hay una fecha seleccionada, mostrar las tareas
+                if (selectedDate) {
+                    mostrarTareasDelDia(selectedDate);
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    } else {
-        alert("Selecciona una fecha primero.");
-    }
+                console.log("Tareas cargadas:", tareasPorFecha);
+                console.log("Estados:", estadosTareas);
+            } else {
+                console.error('Error al cargar las tareas:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error en la petición:', error);
+        });
 }
 
 /* funcion para las videos llamadas */
@@ -304,7 +421,7 @@ let api = null;
 
 function iniciarVideollamada() {
     const domain = "meet.jit.si";
-    const roomName = "TDATrackerSala123";
+    const roomName = `tdatracker_${usuarioId}_${especialistaId}`; 
     const options = {
         roomName: roomName,
         width: "100%",
@@ -342,10 +459,11 @@ function iniciarVideollamada() {
 
 // Función para cerrar sesion
 function cerrarSesion() {
-    window.location.href = '../PHP/cerrar_sesion.php';
+    window.location.href = '../PHP/usuario/cerrar_sesion.php';
 }
 
 //Funcion para cambiar la contraseña
 function cambiarContrasena() {
-    window.location.href = '../PHP/cambiar_pass.php';
+    window.location.href = '../PHP/usuario/cambiar_pass.php';
 }
+
