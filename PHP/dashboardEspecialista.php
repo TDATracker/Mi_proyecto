@@ -33,6 +33,7 @@ $especialistaNombre = $_SESSION["especialista_nombre"];
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
+                    <button class="btn btn-custom" onclick="cambiarContrasena()">Configuración</button>
                     <button class="btn btn-outline-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
                 </li>
             </ul>

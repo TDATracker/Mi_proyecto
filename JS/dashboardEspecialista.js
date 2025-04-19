@@ -203,3 +203,8 @@ document.addEventListener('DOMContentLoaded', function () {
 function cerrarSesion() {
     window.location.href = '../PHP/usuario/cerrar_sesion.php';
 }
+
+//Funcion para cambiar la contraseña
+function cambiarContrasena() {
+    window.location.href = '../PHP/usuario/cambiarpassEspecialista.php';
+}
