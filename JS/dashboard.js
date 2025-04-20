@@ -421,7 +421,7 @@ let api = null;
 
 function iniciarVideollamada() {
     const domain = "meet.jit.si";
-    const roomName = `tdatracker_${usuarioId}_${especialistaId}`; 
+    const roomName = `tdatracker_${especialistaId}_${usuarioId}`; 
     const options = {
         roomName: roomName,
         width: "100%",

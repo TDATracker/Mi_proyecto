@@ -273,5 +273,5 @@ function cerrarSesion() {
 
 // Función para cambiar contraseña
 function cambiarContrasena() {
-    window.location.href = '../PHP/usuario/cambiar_pass.php';
+    window.location.href = '../PHP/centro/cambiar_pass.php';
 }

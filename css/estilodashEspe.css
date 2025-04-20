@@ -50,6 +50,24 @@ body .navbar {
     color: white;
 }
 
+/* Estilo personalizado para el botón Configuración */
+.btn-custom {
+    border-radius: 25px;
+    border-width: 2px;
+    padding: 6px 16px;
+    transition: 0.3s ease;
+    font-weight: bold;
+    color: #fff;
+    border-color: #00c6ff;
+    background-color: transparent;
+}
+
+.btn-custom:hover {
+    background-color: #00c6ff;
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
 /* Secciones tipo "card" laterales */
 .card {
     border: none;
@@ -66,6 +84,7 @@ body .navbar {
 .card h3, .card h4 {
     color: #00c6ff;
 }
+
 
 /* Botones de usuario asignado */
 .btn-outline-primary {

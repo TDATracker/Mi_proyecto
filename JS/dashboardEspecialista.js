@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para iniciar la llamada con Jitsi
     function iniciarLlamada(usuarioId) {
-        const roomName = `sala_${usuarioId}_${selectedUserId}`;
+        const roomName = `tdatracker_${especialistaId}_${usuarioId}`;
         const options = {
             roomName: roomName,
             width: '100%',

@@ -1,45 +1,4 @@
 <?php
-/*
-session_start();
-require('../util/conexion.php');
-header('Content-Type: application/json');
-
-if (!$_conexion) {
-    echo json_encode(array("error" => "Error en la conexión: " . $_conexion->error));
-    exit;
-}
-
-if (isset($_SESSION['centro_id'])) {
-    $centroId = $_SESSION['centro_id'];
-    $email = $_POST['email'];
-    
-
-    $query = "SELECT Id, Nombre, Email FROM Especialista WHERE Email = ?";
-    $stmt = $_conexion->prepare($query);
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result) {
-        $especialistas = array();
-        while ($row = $result->fetch_assoc()) {
-            $especialistas[] = $row;
-        }
-
-        echo json_encode(array("Especialista" => $especialistas));
-    } else {
-        echo json_encode(array("error" => "Error en la consulta: " . $_conexion->error));
-    }
-
-    $stmt->close();
-    $_conexion->close();
-} else {
-    echo json_encode(array("error" => "No se ha iniciado sesión"));
-}
-*/
-?>
-
-<?php
 session_start();
 require('../util/conexion.php');
 header('Content-Type: application/json');
