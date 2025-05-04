@@ -107,6 +107,12 @@ $especialistaNombre = $_SESSION["especialista_nombre"];
         </div>
     </div>
 </div>
+<!-- input para buscar usuarios y relacionarlos -->
+<div class="mb-3">
+    <input type="email" id="buscarEmail" class="form-control" placeholder="Buscar usuario por email">
+    <button class="btn btn-primary w-100 mt-2" onclick="buscarUsuarioPorEmail()">Buscar</button>
+</div>
+<div id="resultadoBusqueda"></div>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

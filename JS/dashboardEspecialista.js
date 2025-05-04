@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function mostrarDetallesUsuario(usuarioId) {
-        console.log("Usuario ID seleccionado:", usuarioId); 
+        //console.log("Usuario ID seleccionado:", usuarioId); 
         selectedUserId = usuarioId;
         
         // Limpiar calendario existente si hay uno
@@ -56,9 +56,9 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`../PHP/tarea/obtenerTareasUsuario.php?usuarioId=${usuarioId}`).then(r => r.json()) // Nueva línea
         ])
         .then(([detallesData, notasData, animoData, tareasData]) => {
-            console.log("Datos del usuario:", detallesData);
-            console.log("Respuesta de notas:", notasData);
-            console.log("Respuesta de ánimo:", animoData);
+            //console.log("Datos del usuario:", detallesData);
+            //console.log("Respuesta de notas:", notasData);
+            //console.log("Respuesta de ánimo:", animoData);
 
             // Mostrar detalles del usuario
             document.getElementById('usuarioNombre').innerText = detallesData.Nombre || "Sin nombre";
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Renderizar calendario con todos los eventos
-            console.log("Total de eventos a mostrar:", todosLosEventos.length);
+            //console.log("Total de eventos a mostrar:", todosLosEventos.length);
             renderizarCalendario(todosLosEventos);
             
             document.getElementById('btnLlamar').onclick = () => iniciarLlamada(usuarioId);
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para renderizar el calendario
     function renderizarCalendario(eventos) {
-        console.log("Renderizando calendario con eventos:", eventos);
+        //console.log("Renderizando calendario con eventos:", eventos);
         const calendarEl = document.getElementById('calendar');
         
         // Destruir calendario existente si existe
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
             locale: 'es',
             events: eventos,
             eventDidMount: function(info) {
-                console.log("Evento montado:", info.event);
+                //console.log("Evento montado:", info.event);
                 info.el.title = info.event.title;
             },
             eventContent: function(arg) {
@@ -207,4 +207,79 @@ function cerrarSesion() {
 //Funcion para cambiar la contraseña
 function cambiarContrasena() {
     window.location.href = '../PHP/usuario/cambiarpassEspecialista.php';
+}
+
+
+
+
+//funcion para agregar y borrar relacion usuario especialista
+function buscarUsuarioPorEmail() {
+    const email = document.getElementById('buscarEmail').value.trim();
+    if (!email) {
+        alert('Por favor introduce un email válido');
+        return;
+    }
+
+    fetch(`./especialista/buscarUsuarioPorEmail.php?email=${encodeURIComponent(email)}`)
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('resultadoBusqueda');
+            container.innerHTML = '';
+            if (data.success && data.usuario) {
+                const usuario = data.usuario;
+                const html = `
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <h5>${usuario.Nombre} ${usuario.Apellidos}</h5>
+                            <p><strong>Email:</strong> ${usuario.Email}</p>
+                            <p><strong>Especialista actual:</strong> ${usuario.Especialista_id ?? 'Ninguno'}</p>
+                            <button class="btn btn-success w-100 mt-2" onclick="asignarUsuario(${usuario.Id})">Asignar a mí</button>
+                            ${usuario.Especialista_id !== null ? `<button class="btn btn-danger w-100 mt-2" onclick="eliminarRelacion(${usuario.Id})">Eliminar relación</button>` : ''}
+                        </div>
+                    </div>`;
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<p class="text-danger">${data.message}</p>`;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Error al buscar usuario');
+        });
+}
+
+function asignarUsuario(usuarioId) {
+    fetch('./especialista/asignarUsuarioEspecialista.php', {
+        method: 'POST',
+        body: JSON.stringify({ usuarioId, especialistaId }),
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Usuario asignado correctamente actualiza la página');
+            buscarUsuarioPorEmail();
+            obtenerUsuarios();
+        } else {
+            alert('Error al asignar usuario: ' + data.message);
+        }
+    });
+}
+
+function eliminarRelacion(usuarioId) {
+    fetch('./especialista/eliminarRelacionUsuarioEspecialista.php', {
+        method: 'POST',
+        body: JSON.stringify({ usuarioId }),
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Relación eliminada actualiza la página');
+            buscarUsuarioPorEmail();
+            obtenerUsuarios();
+        } else {
+            alert('Error al eliminar relación: ' + data.message);
+        }
+    });
 }

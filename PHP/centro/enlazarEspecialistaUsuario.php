@@ -37,7 +37,7 @@ try {
     }*/
 
     // Actualizar el usuario con el especialista_id
-    $update = $_conexion->prepare("UPDATE Usuario SET especialista_id = ? WHERE Id = ?");
+    $update = $_conexion->prepare("UPDATE Usuario SET Especialista_id = ? WHERE Id = ?");
     $update->bind_param('ii', $especialistaId, $usuarioId);
     
     if ($update->execute()) {

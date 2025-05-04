@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION["centro_id"]) || !isset($_SESSION["centro_nombre"])) {
-    header("Location: ./inicio_sesion.php");
+    header("Location: ./PHP/inicio_sesion.php");
     exit;
 }
 
@@ -39,7 +39,7 @@ $centroNombre = $_SESSION["centro_nombre"];
   </div>
 </nav>
 <div class="container mt-5">
-<h3>Bienvenido centro:  <?php echo htmlspecialchars($centroNombre); ?> </h3>
+<h3>Bienvenido centro <?php echo htmlspecialchars($centroNombre); ?> </h3>
 <input type="text" id="buscar" class="form-control mt-2" placeholder="Busca aqui">
   <label>Especialistas:</label>
   <div id="especialista"></div>

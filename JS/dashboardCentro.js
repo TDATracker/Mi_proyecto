@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderUsuarios() {
         const contenedor = document.getElementById('usuario');
         contenedor.innerHTML = '';
-
+    
         // Combinar resultados filtrados + seleccionado si no está incluido
         const toDisplay = [
             ...(appState.selectedUsuario && !appState.filtradoUsuarios.some(u => u.Id === appState.selectedUsuario.Id) 
@@ -73,16 +73,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 : []),
             ...appState.filtradoUsuarios
         ];
-
+    
         if (toDisplay.length === 0) {
             contenedor.innerHTML = '<p>No se encontraron usuarios</p>';
             return;
         }
-
+    
         toDisplay.forEach(usuario => {
             const elemento = document.createElement('div');
             elemento.className = 'list-item' + (appState.selectedUsuario?.Id === usuario.Id ? ' selected' : '');
-
+    
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.checked = appState.selectedUsuario?.Id === usuario.Id;
@@ -90,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
             checkbox.addEventListener('change', () => {
                 if (checkbox.checked) {
                     appState.selectedUsuario = usuario;
-                    // Asegurarnos que existe en todosUsuarios
                     if (!appState.todosUsuarios.some(u => u.Id === usuario.Id)) {
                         appState.todosUsuarios.push(usuario);
                     }
@@ -99,19 +98,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 renderUsuarios();
             });
-
+    
             const label = document.createElement('label');
             label.innerHTML = `
                 <strong>${usuario.Nombre} ${usuario.Apellidos}</strong>
                 <br><small>${usuario.Email}</small>
             `;
-
+    
             const p = document.createElement('p');
-            p.innerHTML = `
-            <strong>Especialista relacionado:</strong>
-            <br><small>${usuario.especialista_id?.Nombre || 'Sin especialista'}</small>
-        `;
+            
+            // Mostrar nombre del especialista o "Ninguno"
+            const nombreEspecialista = 
+            usuario.especialista_nombre && usuario.especialista_apellidos
+                ? `${usuario.especialista_nombre} ${usuario.especialista_apellidos}`
+                : "Ninguno";
 
+            
+            p.innerHTML = `
+                <strong>Especialista asignado:</strong>
+                <br><small>${nombreEspecialista}</small>
+            `;
+    
             elemento.appendChild(checkbox);
             elemento.appendChild(label);
             elemento.appendChild(p);

@@ -21,18 +21,21 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         eventClick: function (info) {
             const eventTitle = info.event.title;
-            const eventId = info.event.id; // Obtener el ID del evento (nota)
-
+            const eventId = info.event.id;
+        
             if (eventTitle) {
-                // Mostrar la nota en el modal
+                const tipo = info.event.classNames.includes('emotion-event') ? 'Emoción' : 'Nota';
                 document.getElementById('notaContenido').innerText = eventTitle;
-
-                // Asegurarse de que el eventId se asigne correctamente al botón de borrar
-                document.getElementById('btnBorrarNota').setAttribute('data-event-id', eventId);
-
-                console.log("Event ID asignado al botón:", eventId); // Verificar si el ID se asigna correctamente
-
-                // Mostrar el modal con la nota completa
+        
+                // Cambiar el título del modal dinámicamente
+                document.getElementById('modalNotaLabel').textContent = tipo;
+        
+                const btnBorrar = document.getElementById('btnBorrarNota');
+                btnBorrar.textContent = `Borrar ${tipo.toLowerCase()}`;
+                btnBorrar.setAttribute('data-event-id', eventId);
+        
+                console.log("Event ID asignado al botón:", eventId);
+        
                 const modal = new bootstrap.Modal(document.getElementById('modalNota'));
                 modal.show();
             }
@@ -46,6 +49,28 @@ document.addEventListener('DOMContentLoaded', function () {
     // Función para agregar una emoción a un día específico
     window.agregarEmocion = function (emocion) {
         if (selectedDate) {
+            // 1. Buscar emociones ya existentes en esa fecha
+            const eventosExistentes = calendar.getEvents().filter(event =>
+                event.startStr === selectedDate && event.classNames.includes('emotion-event')
+            );
+    
+            // 2. Eliminar emociones anteriores
+            eventosExistentes.forEach(evento => {
+                // Eliminar en backend
+                fetch('../PHP/animo/eliminarAnimo.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ id: evento.id })
+                });
+    
+                // Eliminar del calendario visualmente
+                evento.remove();
+            });
+    
+            // 3. Guardar nueva emoción
             fetch('../PHP/animo/guardarAnimo.php', {
                 method: 'POST',
                 headers: {
@@ -57,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     fecha: selectedDate
                 })
             })
-                .then(response => response.json()) // Manejar respuesta en formato JSON
+                .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         calendar.addEvent({
@@ -69,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
                         alert("Estado de ánimo guardado correctamente");
                     } else {
-                        alert("Error al guardar el estado de ánimo: " + data.message || "Error desconocido");
+                        alert("Error al guardar el estado de ánimo: " + (data.message || "Error desconocido"));
                     }
                 })
                 .catch(error => {
@@ -174,6 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para agregar una tarea al día seleccionado
     window.agregarTarea = function () {
+        console.log("Función agregarTarea ejecutada");
         const tarea = document.getElementById('nuevaTarea').value;
         if (tarea && selectedDate) {
             fetch('../PHP/tarea/guardarTarea.php', {

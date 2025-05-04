@@ -39,7 +39,7 @@ try {
     }
     */
     // Actualizar el usuario
-    $updateStmt = $_conexion->prepare("UPDATE Usuario SET especialista_id = NULL WHERE Id = ?");
+    $updateStmt = $_conexion->prepare("UPDATE Usuario SET Especialista_id = NULL WHERE Id = ?");
     $updateStmt->bind_param('i', $usuarioId);
     
     if ($updateStmt->execute()) {

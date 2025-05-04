@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 require('../util/conexion.php');
@@ -20,7 +21,7 @@ if (isset($_SESSION['centro_id'])) {
     // Comprobamos que el email no esté vacío
     if (!empty($email)) {
         // Consulta SQL para obtener los especialistas que coincidan con el email
-        $query = "SELECT Nombre, Apellidos, Email FROM Especialista WHERE Email = ?";
+        $query = "SELECT Id, Nombre, Apellidos, Email FROM Especialista WHERE Email = ?";
         $stmt = $_conexion->prepare($query);
         $stmt->bind_param('s', $email);
         $stmt->execute();

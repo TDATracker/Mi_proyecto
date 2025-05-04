@@ -8,7 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <a href="../../dashboardCentro.php" class="btn btn-secondary btn-volver">
+    <a href="../dashboardCentro.php" class="btn btn-secondary btn-volver">
         <i class="fas fa-arrow-left"></i>
     </a>
     <?php

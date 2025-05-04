@@ -20,7 +20,12 @@ if (isset($_SESSION['centro_id'])) {
     // Comprobamos que el email no esté vacío
     if (!empty($email)) {
         // Consulta SQL para obtener los usuarios que coincidan con el email
-        $query = "SELECT Nombre, Apellidos, Email, Especialista_id FROM Usuario WHERE Email = ?";
+        $query =//"SELECT Id, Nombre, Apellidos, Email, especialista_id FROM Usuario WHERE Email = ?";
+        "SELECT u.Id, u.Nombre, u.Apellidos, u.Email, u.Especialista_id, 
+                         e.Nombre as especialista_nombre, e.Apellidos as especialista_apellidos
+                  FROM Usuario u
+                  LEFT JOIN Especialista e ON u.Especialista_id = e.Id
+                  WHERE u.Email = ?";
         $stmt = $_conexion->prepare($query);
         $stmt->bind_param('s', $email);
         $stmt->execute();
