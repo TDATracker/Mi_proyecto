@@ -271,6 +271,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Carga inicial
     hacerBusqueda('');
+
+    // Funcionalidad para el botón de cambiar entre modo oscuro y claro
+    const modoSwitch = document.querySelector('.modo-switch');
+    modoSwitch.addEventListener('click', function () {
+        document.body.classList.toggle('modo-oscuro'); // Cambiar clase para el modo oscuro
+        modoSwitch.textContent = document.body.classList.contains('modo-oscuro') ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+    });
 });
 
 // Función para cerrar sesión

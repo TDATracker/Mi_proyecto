@@ -12,6 +12,23 @@ if (!isset($_SESSION["usuario"])) {
     exit;
 }
 
+// Verificar si el usuario tiene plan premium activo
+$usuario_id = $_SESSION['usuario_id'] ?? null;
+$tiene_plan_premium = false;
+
+if ($usuario_id && isset($_conexion)) {
+    $stmt = $_conexion->prepare("SELECT plan_activo, plan_expira FROM Usuario WHERE Id = ?");
+    $stmt->bind_param("i", $usuario_id);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    $usuario = $resultado->fetch_assoc();
+    $stmt->close();
+
+    if ($usuario && $usuario['plan_activo'] == 1 && strtotime($usuario['plan_expira']) > time()) {
+        $tiene_plan_premium = true;
+    }
+}
+
 // Recuperar nombre del especialista si está logueado
 $nombre_especialista = "No asignado";
 if (isset($_SESSION["especialista_id"])) {
@@ -39,7 +56,7 @@ if (isset($_SESSION["especialista_id"])) {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FullCalendar CSS -->
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css' rel='stylesheet' />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css' rel='stylesheet'/>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Custom CSS -->
@@ -59,6 +76,9 @@ if (isset($_SESSION["especialista_id"])) {
 
             <div class="collapse navbar-collapse order-4 mt-2 mt-lg-0 justify-content-end" id="navbarOpciones">
                 <div class="d-flex flex-column flex-lg-row gap-2">
+                    <?php if (!$tiene_plan_premium): ?>
+                        <a href="./pagos/pago.php" class="btn btn-custom">Acceder a Premium</a>
+                    <?php endif; ?>
                     <button class="btn btn-custom" onclick="cambiarContrasena()">Configuración</button>
                     <button class="btn btn-custom" onclick="cerrarSesion()">Cerrar Sesión</button>
                 </div>
@@ -102,8 +122,14 @@ if (isset($_SESSION["especialista_id"])) {
     </div>
 
     <div class="recuadros-adicionales text-center mt-5">
-        <div class="recuadro">🎮 Minijuegos <br> En construcción</div>
-        <button class="btn btn-primary mt-4" onclick="iniciarVideollamada()">📹 Iniciar Videollamada</button>
+        <?php if ($tiene_plan_premium): ?>
+            <div class="recuadro">🎮 Minijuegos <br> En construcción</div>
+            <button class="btn btn-primary mt-4" onclick="iniciarVideollamada()">📹 Iniciar Videollamada</button>
+        <?php else: ?>
+            <div class="alert alert-warning" role="alert">
+                🚫 Funciones Premium no disponibles. Activa tu plan para acceder a videollamadas, minijuegos y más.
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- Modal de Nota -->
@@ -147,12 +173,14 @@ if (isset($_SESSION["especialista_id"])) {
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales-all.js'></script>
     <script src="https://meet.jit.si/external_api.js"></script>
     <script>
-    // Asegúrate de pasar las variables PHP al JavaScript
-    const usuarioId = <?php echo $_SESSION['usuario_id']; ?>;
-    const especialistaId = <?php echo isset($_SESSION['especialista_id']) ? $_SESSION['especialista_id'] : 'null'; ?>;
-</script>
-<script> window.chtlConfig = { chatbotId: "2491132924" } </script>
-    <script async data-id="2491132924" id="chatling-embed-script" type="text/javascript" src="https://chatling.ai/js/embed.js"></script>
+        const usuarioId = <?php echo $_SESSION['usuario_id']; ?>;
+        const especialistaId = <?php echo isset($_SESSION['especialista_id']) ? $_SESSION['especialista_id'] : 'null'; ?>;
+    </script>
+
+    <?php if ($tiene_plan_premium): ?>
+        <script> window.chtlConfig = { chatbotId: "2491132924" } </script>
+        <script async data-id="2491132924" id="chatling-embed-script" type="text/javascript" src="https://chatling.ai/js/embed.js"></script>
+    <?php endif; ?>
 
     <script src="../JS/dashboard.js"></script>
 </body>

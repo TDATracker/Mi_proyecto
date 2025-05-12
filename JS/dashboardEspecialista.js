@@ -195,6 +195,13 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.show();
     }
 
+    // Funcionalidad para el botón de cambiar entre modo oscuro y claro
+    const modoSwitch = document.querySelector('.modo-switch');
+    modoSwitch.addEventListener('click', function () {
+        document.body.classList.toggle('modo-oscuro'); // Cambiar clase para el modo oscuro
+        modoSwitch.textContent = document.body.classList.contains('modo-oscuro') ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+    });
+
     // Inicializar el Dashboard
     obtenerUsuarios();
 });

@@ -1,163 +1,37 @@
-/* Estilo global - TDA/Salud Mental */
-body {
-    background: linear-gradient(135deg, #6a8fd8 0%, #a5c6f3 100%);
-    color: #2d3748;
-    font-family: 'Comic Neue', 'Segoe UI', sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    text-align: center;
-    overflow-x: hidden;
-}
-
-/* Contenedor estilo Cerebro */
-.container {
-    width: 90%;
-    max-width: 480px;
-    padding: 2.5rem;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(106, 143, 216, 0.3);
-    border: 2px solid #e2e8f0;
-    position: relative;
-    overflow: visible; /* Cambiado de hidden a visible */
-    padding-bottom: 80px; /* Espacio para las imágenes */
-    padding-top: 80px;
-    z-index: 1;
-}
-
-/* Barra animada cerebro/neuronal */
-h1 {
-    color: #4a6fa5;
-    font-weight: 800;
-    font-size: 2.4rem;
-    margin-bottom: 2.5rem;
-    position: relative;
-    display: inline-block;
-}
-
-h1::after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 0;
+.card-container {
     width: 100%;
-    height: 4px;
-    border-radius: 4px;
-    background: linear-gradient(90deg, 
-        #6a8fd8, #a5c6f3, #ffb347, #ff7676,
-        #6a8fd8);
-    background-size: 300% 100%;
-    animation: brainFlow 8s linear infinite;
+    max-width: 400px;
+    padding: 30px;
 }
 
-@keyframes brainFlow {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 100% 50%; }
+.card {
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Imágenes relacionadas con TDA */
-.neuro-character {
-    position: absolute;
-    width: 140px;
-    height: auto;
-    z-index: 1; /* Cambiado a 1 para que esté por encima del fondo */
-    opacity: 0.9;
-    filter: drop-shadow(0 5px 15px rgba(106, 143, 216, 0.5));
-    transition: all 0.5s ease;
-}
+/* .form-label {
+    font-weight: 500;
+} */
 
-.neuro-character.left {
-    bottom: -20px;
-    left: -20px;
-    animation: float-left 6s ease-in-out infinite;
-}
+/* .input-group-text i {
+    color: #0d6efd;
+} */
 
-.neuro-character.right {
-    top: -20px;
-    right: -20px;
-    animation: float-right 6s ease-in-out infinite 1s;
-}
-
-/* Botones estilo calmante */
-.btn {
-    border-radius: 14px;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    font-weight: 700;
-    transition: all 0.3s ease;
+/* .btn-primary {
+    background-color: #0d6efd;
     border: none;
-    margin: 0.7rem;
-    color: white;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(106, 143, 216, 0.4);
-}
+    padding: 10px 0;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+} */
 
-.btn-primary {
-    background: linear-gradient(45deg, #6a8fd8, #8aaee0);
-}
+/* .btn-primary:hover {
+    background-color: #0b5ed7;
+} */
 
-.btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(106, 143, 216, 0.6);
-}
-
-/* Campos de formulario */
-.form-control {
-    background-color: #f8fafc;
-    border: 2px solid #e2e8f0;
-}
-
-.form-control:focus {
-    border-color: #6a8fd8;
-    box-shadow: 0 0 0 3px rgba(106, 143, 216, 0.3);
-}
-
-/* Efectos de ondas cerebrales */
-.brain-wave {
-    position: fixed;
-    width: 300px;
-    height: 100px;
-    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg"><path d="M0 50 C 50 30, 100 70, 150 50 C 200 30, 250 70, 300 50" stroke="%236a8fd8" fill="none" stroke-width="3"/></svg>');
-    opacity: 0.2;
-    animation: waveMove 4s ease-in-out infinite;
-    z-index: -1;
-    background-repeat: repeat-x;
-}
-
-/* Animación para las ondas cerebrales */
-@keyframes waveMove {
-    0% {
-        transform: translateX(-100px) translateY(0px);
-    }
-    50% {
-        transform: translateX(0px) translateY(15px);
-    }
-    100% {
-        transform: translateX(100px) translateY(0px);
-    }
-}
-
-/* Ajustes específicos para cada onda */
-.brain-wave:nth-child(1) {
-    top: 20%;
-    left: -150px;
-    animation-delay: 0s;
-}
-
-.brain-wave:nth-child(2) {
-    bottom: 20%;
-    right: -150px;
-    animation-delay: -2s;
-    transform: rotate(180deg);
-}
-
-/* Rutas alternativas para imágenes */
-.no-svg .neuro-character {
-    content: url('https://i.imgur.com/JYw7ZyG.png'); /* Imagen de respaldo */
+.text-muted {
+    font-size: 0.875em;
+    line-height: 1.3;
 }

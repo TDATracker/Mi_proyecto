@@ -11,6 +11,10 @@
     --accent-dark: #FF6363;
 }
 
+body{
+    overflow-x: hidden;
+}
+
 .navbar {
     width: 100%;
     margin: 0;
@@ -46,11 +50,8 @@
 /* margen de los enlaces */
 .navbar-nav {
     display: flex;
-    /* Activa el modelo Flexbox */
-    gap: 45px;
     /* Espacio entre enlaces */
     margin-right: 5%;
-    /* Mantén el margen general si es necesario */
 }
 
 /* eliminar el borde de la hamburguesa */
@@ -61,7 +62,9 @@
     /* Si hay sombras, también se eliminan */
 }
 
-
+.nav-item{
+    margin-left: 20px
+}
 /* hamburguesa */
 .navbar-toggler {
     margin-right: 5%;

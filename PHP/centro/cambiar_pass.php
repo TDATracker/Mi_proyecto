@@ -6,11 +6,10 @@
     <title>Cambiar Contraseña</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../../css/estilopass.css">
+    
 </head>
 <body>
-    <a href="../dashboardCentro.php" class="btn btn-secondary btn-volver">
-        <i class="fas fa-arrow-left"></i>
-    </a>
     <?php
     session_start();
     require('../util/conexion.php');
@@ -94,31 +93,54 @@
     }
     ?>
 
-    <div class="container">
-        <h1 class="text-center mb-4">Cambiar Contraseña</h1>
-        
-        <?php if (!empty($mensaje_exito)): ?>
-            <div class="alert alert-success"><?php echo $mensaje_exito; ?></div>
-        <?php endif; ?>
-        
-        <?php if (!empty($mensaje_error)): ?>
-            <div class="alert alert-danger"><?php echo $mensaje_error; ?></div>
-        <?php endif; ?>
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card p-4 shadow-lg" style="width: 400px;">
+            <h3 class="text-center mb-3">Cambiar Contraseña</h3>
 
-        <form method="post" action="" class="border p-4 rounded shadow-sm bg-white">
-            <div class="mb-3">
-                <label for="pass_actual" class="form-label">Contraseña Actual</label>
-                <input type="password" class="form-control" id="pass_actual" name="pass_actual" required>
-                <?php if (!empty($error_actual)) echo "<span class='error'>$error_actual</span>"; ?>
-            </div>
-            <div class="mb-3">
-                <label for="pass_nueva" class="form-label">Nueva Contraseña</label>
-                <input type="password" class="form-control" id="pass_nueva" name="pass_nueva" required>
-                <small class="text-muted">Mínimo 6 caracteres, con mayúsculas, minúsculas y caracteres especiales.</small>
-                <?php if (!empty($error_nueva)) echo "<span class='error'>$error_nueva</span>"; ?>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Cambiar Contraseña</button>
-        </form>
+            <?php if (!empty($mensaje_exito)): ?>
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($mensaje_exito); ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($mensaje_error)): ?>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($mensaje_error); ?>
+                </div>
+            <?php endif; ?>
+
+            <form method="post" action="">
+                <div class="mb-3">
+                    <label for="pass_actual" class="form-label">Contraseña Actual</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="pass_actual" name="pass_actual" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="pass_nueva" class="form-label">Nueva Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        <input type="password" class="form-control" id="pass_nueva" name="pass_nueva" required 
+                            minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
+                    </div>
+                    <small class="form-text text-muted">
+                        La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula y un número.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-sync-alt"></i> Actualizar
+                </button>
+
+                <br><br>
+
+                <a href="../dashboardCentro.php" class="btn btn-secondary btn-volver w-100">
+                    <i class="fas fa-brain"></i> Volver
+                </a>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

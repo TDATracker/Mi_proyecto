@@ -22,11 +22,11 @@ body {
     background-color: var(--fondo);
     color: var(--texto);
     font-family: Arial, sans-serif;
+    overflow-x: hidden;
 }
 
 .navbar {
     background-color: var(--navbar);
-    position: relative;
 }
 
 .navbar a {
@@ -45,7 +45,6 @@ body {
     color: var(--boton-texto);
     border-radius: 5px;
     padding: 8px 12px;
-    /* Reducido para pantallas pequeñas */
 }
 
 /* logo TDATracker */
@@ -61,14 +60,7 @@ body {
     align-items: start;
 }
 
-/* Contenedor de tareas y música */
-.tareas-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 50%;
-}
-
+/* Contenedor de tareas */
 .tareas-lista {
     max-height: 200px;
     min-height: 200px;
@@ -78,6 +70,8 @@ body {
     border-radius: 10px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
+
+
 
 .tareas-lista div {
     padding: 8px;
@@ -94,7 +88,6 @@ body {
     color: #888;
 }
 
-/* Música debajo de tareas */
 .musica-container {
     margin-top: 50px;
     text-align: center;
@@ -103,7 +96,7 @@ body {
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Recuadros adicionales (Minijuegos y Video Llamadas) */
+/* Recuadros adicionales */
 .recuadros-adicionales {
     display: flex;
     justify-content: space-around;
@@ -111,6 +104,14 @@ body {
     margin-bottom: 80px;
     width: 50%;
     margin-left: 25%;
+}
+
+.calendar-container{
+    background-color: white;
+}
+
+.tareas-container{
+    background-color: white;
 }
 
 .recuadro {
@@ -125,13 +126,10 @@ body {
 /* Estilo para el día seleccionado */
 .fc-day.selected {
     background-color: var(--boton-bg) !important;
+}
 
-    /* Azul */
-    .fc-daygrid-day-number {
-        color: white !important;
-        /* Cambiar el texto a blanco */
-
-    }
+.fc-daygrid-day-number {
+    color: black !important;
 }
 
 /* Quitar el subrayado de los numero y letras del calendario */
@@ -143,40 +141,31 @@ a {
 /* Estilo para el día actual */
 .fc-day.fc-today {
     background-color: #f0f0f0 !important;
-    /* Color más claro para el día actual */
 }
 
 /* Estilo para cambiar el cursor cuando el ratón pasa sobre una nota */
 .fc-event {
     cursor: pointer;
-    /* Cambiar el cursor al pasar el ratón */
 }
- /* Estilos base (móviles) */
- .container-layout {
+
+.container-layout {
     display: block;
     padding: 15px;
 }
 
-.calendar-container, .tareas-container {
-    margin-bottom: 20px;
-}
-
-
 @media (min-width: 768px){
     .container-layout {
         display: grid;
-        grid-template-columns: 1fr 1fr; /* Dos columnas */
+        grid-template-columns: 1fr 1fr;
         gap: 20px;
     }
 
     .calendar-container, .tareas-container {
         padding: 15px;
-        margin-bottom: 0; /* El margen inferior no es necesario en grid */
+        margin-bottom: 0;
         border: 1px solid #ccc;
         border-radius: 8px;
     }
-
-
 }
 
 /* Responsivo */
@@ -185,20 +174,16 @@ a {
         flex-direction: column;
         align-items: center;
         padding: 10px;
-        
     }
 
     .modo-switch {
         position: relative;
         margin-bottom: 10px;
-        margin-top: -5px;
     }
 
     .btn-custom {
         padding: 6px 10px;
-        /* Botones más pequeños en pantallas pequeñas */
         font-size: 10px;
-        /* Reducido el tamaño de texto */
     }
 
     .container-grid {
@@ -221,7 +206,6 @@ a {
 
     .navbar-brand {
         font-size: 15px;
-        /* Ajuste de tamaño de texto del logo */
         margin-left: 15% !important;
     }
 
@@ -236,78 +220,46 @@ a {
         outline: none !important;
     }
 
-    /* Color por defecto (modo claro): var(--texto) ya es oscuro */
-    .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(13,27,42, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-    }
-
-    /* Modo oscuro: cambiar a color var(--texto) (#e0e1dd) */
+    /* Modo oscuro */
     .modo-oscuro .navbar-toggler-icon {
         background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23e0e1dd' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
     }
 
-    /* Borde en modo oscuro usando tu variable --texto */
-    .modo-oscuro .navbar-toggler {
-        border: 1px solid var(--texto);
-    }
-
-
-}
-
-
-
-/* Asegúrate de que la hamburguesa esté visible en pantalla horizontal */
-@media (max-width: 1024px) {
-    
-
-    .navbar-toggler:focus,
-    .navbar-toggler:focus-visible,
-    .navbar-toggler:focus-within {
-        box-shadow: none !important;
-        outline: none !important;
-    }
-
-    /* Color por defecto (modo claro): var(--texto) ya es oscuro */
-    .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(13,27,42, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-    }
-
-    /* Modo oscuro: cambiar a color var(--texto) (#e0e1dd) */
-    .modo-oscuro .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23e0e1dd' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-    }
-
-    /* Borde en modo oscuro usando tu variable --texto */
+    /* Borde en modo oscuro */
     .modo-oscuro .navbar-toggler {
         border: 1px solid var(--texto);
     }
 }
 
-/* Evitar el cambio de estilo al hacer clic (focus/active) */
-.btn-custom:focus,
-.btn-custom:active {
-    outline: none;
-    box-shadow: none;
-    background-color: var(--boton-bg);
-    color: var(--boton-texto);
-    border-color: var(--boton-borde);
-}
-
-/* Estilo del modal en modo oscuro */
+/* Modal en modo oscuro */
 .modo-oscuro .modal-content {
     background-color: #1b263b;
-    /* Fondo oscuro */
     color: #e0e1dd;
-    /* Texto claro */
 }
 
 .modo-oscuro .modal-header,
 .modo-oscuro .modal-footer {
     border-color: #415a77;
-    /* Bordes más suaves en modo oscuro */
 }
 
 .modo-oscuro .btn-close {
     filter: invert(1);
-    /* Cambia el botón de cerrar a blanco */
+}
+
+.modo-oscuro .calendar-container{
+    background-color: #1b263b;
+}
+
+.modo-oscuro .fc-daygrid-day-number {
+    color: white !important;
+}
+
+.modo-oscuro .tareas-container{
+    background-color: #1b263b;
+}
+
+.modo-oscuro .card-body{
+    background-color: #1b263b;
+    color: white;
+    border-radius: 1%;
 }

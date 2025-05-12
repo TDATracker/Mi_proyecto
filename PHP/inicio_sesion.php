@@ -106,10 +106,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <div class="container">
-        <h1>Iniciar sesión</h1>
-
-        <a class="nav-link btn btn-primary w-100" href="../index.html">Inicio</a>
-
         <!-- Contenedor principal -->
         <div class="container d-flex justify-content-center align-items-center vh-100">
             <!-- Tarjeta con sombra -->
@@ -139,6 +135,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <button type="submit" class="btn btn-primary w-100">Ingresar</button>
                 </form>            
+
+                <br>
+
+                <a href="../index.html" class="btn btn-secondary btn-volver w-100">
+                    <i class="fas fa-brain"></i> Volver
+                </a>
 
                 <!-- Recuperar la contraseña -->
                 <div class="text-center mt-3">
